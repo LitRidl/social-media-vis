@@ -1,0 +1,27 @@
+{
+    "parser": "babel-eslint",
+    "rules": {
+        "indent": [
+            2,
+            4
+        ],
+        "quotes": [
+            1,
+            "double"
+        ],
+        "linebreak-style": [
+            2,
+            "unix"
+        ],
+        "no-extra-semi": 2,
+        "no-unused-vars": [1, {"vars": "local", "args": "all"}]
+
+    },
+    "ecmaFeatures": { "destructuring": true },
+    "env": {
+        "es6": true,
+        "node": true,
+        "browser": true
+    },
+    "extends": "eslint:recommended"
+}

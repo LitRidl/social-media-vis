@@ -1,0 +1,30 @@
+{
+  "name": "avl-analytics",
+  "version": "0.0.1",
+  "description": "avl analytics",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test",
+    "packages": "jspm_packages"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "avl"
+  ],
+  "author": "",
+  "license": "ISC",
+  "jspm": {
+    "directories": {
+      "doc": "doc",
+      "test": "test"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
+  }
+}

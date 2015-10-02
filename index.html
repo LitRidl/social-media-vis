@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Аналитика</title>
+    <!--<link href="{{http_subpath}}/{{static_path}}/css/bootstrap.min.css" rel="stylesheet" media="all">-->
+    <!--<link href="{{http_subpath}}/{{static_path}}/js/lib/leaflet/leaflet.css" rel="stylesheet" media="all">-->
+    <!--<script src="{{http_subpath}}/{{static_path}}/js/lib/jquery-2.1.4.min.js"></script>-->
+    <!--<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/4.10.3/css/bootstrap-slider.min.css">
+    <link rel="stylesheet" href="{{ http_subpath }}/{{ static_path }}/js/lib/jquery/jquery.qtip.min.css">
+    <!--<link href="{{http_subpath}}/{{static_path}}/css/font-awesome.css" rel="stylesheet" media="all">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css">-->
+    <!--<link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css">-->
+    <!--<link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css">-->
+    <!--<link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css">-->
+    <!--<link rel="stylesheet" href="{{http_subpath}}/{{static_path}}/js/lib/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css">-->
+
+    <link href="{{ http_subpath }}/{{ static_path }}/css/daterangepicker.css" rel="stylesheet" media="all">
+
+    <link rel="stylesheet" href="{{ http_subpath }}/{{ static_path }}/js/lib/leaflet/leaflet.css"/>
+    <link rel="stylesheet" href="{{ http_subpath }}/{{ static_path }}/js/lib/markercluster/MarkerCluster.Default.css"/>
+    <link rel="stylesheet" href="{{ http_subpath }}/{{ static_path }}/js/lib/markercluster/MarkerCluster.css"/>
+
+    <link rel="stylesheet" href="{{ http_subpath }}/{{ static_path }}/maps/styles/base.css"/>
+    <link rel="stylesheet" href="{{ http_subpath }}/{{ static_path }}/maps/styles/legend.css"/>
+    <link rel="stylesheet" href="{{ http_subpath }}/{{ static_path }}/maps/styles/popup.css"/>
+    <link rel="stylesheet" href="{{ http_subpath }}/{{ static_path }}/maps/styles/misc.css"/>
+
+    <link rel="stylesheet" type="text/css" href="{{ http_subpath }}/{{ static_path }}/css/dc.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ http_subpath }}/{{ static_path }}/css/styles.css"/>
+    <link rel="stylesheet" type="text/css" href="{{ http_subpath }}/{{ static_path }}/css/printfix.css"/>
+
+
+</head>
+
+<body id="spinner">
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"><span class="white">Аналитика</span></a>
+
+        <div class="col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="form-group has-feedback">
+                    <input id="searchbox" type="text" placeholder="Искать" class="form-control">
+                    <span id="searchicon" class="fa fa-search form-control-feedback"></span>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-3">
+            <ul class="nav nav-tabs navbar-header">
+                <li id="sent_tab" onclick="switchToSent()" class="active">
+                    <a class="white" href="#sent">
+                        <i class="fa fa-bar-chart white"></i> Графы
+                    </a>
+                </li>
+                <li id="map_tab" onclick="switchToMap()">
+                    <a class="white" href="#map">
+                        <i class="fa fa-globe white"></i> Карта
+                    </a>
+                </li>
+                <li id="graph_tab" onclick="switchToGraph()">
+                    <a class="white" href="#graph">
+                        <i class="fa fa-sitemap white"></i> Связи
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!--<div class="col-sm-2 dc-data-count" id="reset">-->
+        <!--Выбрано <span class="filter-count"></span> из <span class="total-count"></span>.-->
+        <!--</div>-->
+
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn">
+                    <i title="Гистограммы" class="fa fa-bar-chart fa-flip-horizontal fa-rotate-90 white"></i>
+                    <!--&nbsp;Гистограммы-->
+                </a>
+            </li>
+            <li>
+                <button class="hidden-print btn navbar-btn" onclick="dc.filterAll(); dc.renderAll();">
+                    <img src="{{ http_subpath }}/{{ static_path }}/images/cancelEnd.svg" title="Отмена" height="20px">
+                </button>
+            </li>
+            <li>
+                <button class="hidden-print btn navbar-btn"
+                        onclick="this.classList.toggle('active'); refreshDataSwitch();">
+                    <img src="{{ http_subpath }}/{{ static_path }}/images/redo.svg"
+                         title="Обновлять при появлении новых сообщений" height="20px">
+                </button>
+            </li>
+            <li>
+                <button class="hidden-print btn navbar-btn"
+                        onclick="httpGet('{{ http_subpath }}/api/messages/download_new')">
+                    <img src="{{ http_subpath }}/{{ static_path }}/images/social-twitter.svg"
+                         title="Закачать новые сообщения из Твиттера" height="20px">
+                </button>
+            </li>
+            <li>
+                <button class="hidden-print btn navbar-btn" id="range">
+                    <img src="{{ http_subpath }}/{{ static_path }}/images/calendar.svg" title="Задать фильтр по датам"
+                         height="20px">
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div id="dataContainer">
+    <div id="sidebar">
+        <div class="sidebar-wrapper">
+            <div class="panel panel-default" id="features">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Гистограммы
+                        <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div id='topics-row-chart'>
+                        <strong>Топ тем</strong>
+                    </div>
+
+                    <div id='users-row-chart'>
+                        <strong>Топ пользователей</strong>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="central">
+        <!--<div class="row" id="reset">-->
+        <!--<div class="col-sm-3 pull-right dc-data-count">-->
+        <!--Вы выбрали <span class="filter-count"></span> сообщений из <span class="total-count"></span>.-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<div class="row">-->
+        <div id="sent">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Распределение тональности</div>
+                        <div class="panel-body">
+                            <div id="sentiment-donut-chart"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div class="col-sm-3" id="sentiment-donut-chart">-->
+                <!--<strong>Распределение тональности</strong>-->
+                <!--</div>-->
+                <div class="col-sm-7">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Всего позитив и негатив</div>
+                        <div class="panel-body">
+                            <div id="sentiment-area-chart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2 dc-data-count">
+                    <div class="row">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">Выбрано</div>
+                            <div class="panel-body">
+                                <span class="filter-count pull-right"
+                                      style="font-size: 65px; margin-right: 10px"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">Всего</div>
+                            <div class="panel-body">
+                                <span class="total-count pull-right" style="font-size: 65px; margin-right: 10px"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div class="col-sm-9" id="sentiment-area-chart">-->
+                <!--<strong>Всего позитив и негатив</strong>-->
+                <!--</div>-->
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Сравнительный график по темам (Позитив - Негатив)</div>
+                        <div class="panel-body">
+                            <div id="comparator-line-chart"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div class="col-sm-12" id="comparator-line-chart">-->
+                <!--<strong>Сравнительный график по темам (Позитив - Негатив)</strong>-->
+                <!--</div>-->
+            </div>
+        </div>
+        <div id="map" style="display: none"></div>
+        <div id="graph" style="display: none">
+            <div id="cy"></div>
+            <div id="graph_control">
+                <!--<h2>Распределение</h2>-->
+
+                <div class="btn-group-vertical" role="group" aria-label="...">
+                    <button type="button" class="btn btn-small" onclick="changeLayout('grid');">
+                        Решетка
+                    </button>
+                    <!--<button type="button" class="btn btn-small" onclick="changeLayout('random');">-->
+                    <!--Случайное-->
+                    <!--</button>-->
+                    <button type="button" class="btn btn-small" onclick="changeLayout('spread');">
+                        Распределенный
+                    </button>
+                    <!--<button type="button" class="btn btn-small" onclick="changeLayout('springy');">-->
+                    <!--Springy-->
+                    <!--</button>-->
+                    <!--<button type="button" class="btn btn-small" onclick="changeLayout('arbor');">-->
+                    <!--Arbor-->
+                    <!--</button>-->
+                    <button type="button" class="btn btn-small" autofocus onclick="changeLayout('circle');">
+                        Круг
+                    </button>
+                    <button type="button" class="btn btn-small" onclick="changeLayout('cola');">
+                        Параметрическое
+                    </button>
+                    <button type="button" class="btn btn-small" onclick="changeLayout('breadthfirst');">
+                        Иерархическое
+                    </button>
+                    <button type="button" class="btn btn-small" onclick="changeLayout('concentric');">
+                        Концентрическое
+                    </button>
+                    <button type="button" class="btn btn-small" onclick="changeLayout('cose');">
+                        Кластерное
+                    </button>
+                    <button type="button" class="btn btn-small" onclick="changeLayout('none');">
+                        Без распределения
+                    </button>
+                </div>
+                <div id="sliders">
+
+                </div>
+            </div>
+
+        </div>
+        <!--</div>-->
+
+        <div class="row" id="timebar">
+            <div class="col-sm-12" id="total-tweets-bar-chart">
+                <!--<strong>Сообщения по дням.</strong>-->
+                <span class="reset" style="display: none;">Текущий фильтр: <span class="filter"></span></span>
+            </div>
+        </div>
+
+        <div class="row" id="list_block">
+            <table id="dc-data-table"
+                   class="col-sm-12 table table-striped table-bordered table-hover dc-data-table">
+                <thead>
+                <tr class="table-header">
+                    <!--<th>Date</th>-->
+                    <!--<th>Topic</th>-->
+                    <th class="text-center">
+                        Сообщения
+                        <span class="pull-right">
+                            <img src="{{ http_subpath }}/{{ static_path }}/images/cal.svg" height="30px"
+                                 title="Сортировать по дате" onclick="sortByDate()">
+                            <img src="{{ http_subpath }}/{{ static_path }}/images/copy_clean.svg" height="30px"
+                                 title="Сортировать по числу ретвиттов" onclick="sortByRetweets()">
+                            <img src="{{ http_subpath }}/{{ static_path }}/images/heart.svg" height="30px"
+                                 title="Сортировать по числу избранных" onclick="sortByFavorites()">
+                        </span>
+                    </th>
+                    <!--<th>Sentiment</th>-->
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.0/lodash.min.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/jquery-2.1.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/4.10.3/bootstrap-slider.min.js"></script>
+<!--<script src="{{http_subpath}}/{{static_path}}/js/lib/bootstrap.min.js"></script>-->
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/d3.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/crossfilter.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/dc.js"></script>
+<!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/arbor.js"></script>-->
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/cola.v3.min.js"></script>
+<!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/dagre.js"></script>-->
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/foograph.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/rhill-voronoi-core.js"></script>
+<!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/springy.js"></script>-->
+<script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+<!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.arbor.js"></script>-->
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.breadthfirst.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.circle.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.cola.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.concentric.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.cose.js"></script>
+<!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.dagre.js"></script>-->
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.grid.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.null.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.preset.js"></script>
+<!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.random.js"></script>-->
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.spread.js"></script>
+<!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.springy.js"></script>-->
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/cytoscape-cxtmenu.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/jquery/jquery.qtip.min.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/cytoscape-qtip.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>-->
+<!--<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js"></script>-->
+<!--<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>-->
+<!--<script src="{{http_subpath}}/{{static_path}}/js/lib/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js"></script>-->
+
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/Autolinker.min.js"></script>
+
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/leaflet/leaflet.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/leaflet-hash.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/markercluster/leaflet.markercluster.js"></script>
+
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/raphael-min.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/L.RaphaelIcon.js"></script>
+<!--<script src="{{http_subpath}}/{{static_path}}/maps/vendor/Autolinker.min.js"></script>-->
+
+<!--<script src="{{http_subpath}}/{{static_path}}/maps/vendor/leaflet/leaflet.js"></script>-->
+<!--<script src="{{http_subpath}}/{{static_path}}/maps/vendor/leaflet-hash.js"></script>-->
+<!--<script src="{{http_subpath}}/{{static_path}}/maps/vendor/markercluster/leaflet.markercluster.js"></script>-->
+
+<!--<script src="{{http_subpath}}/{{static_path}}/maps/vendor/raphael-min.js"></script>-->
+<!--<script src="{{http_subpath}}/{{static_path}}/maps/js/L.RaphaelIcon.js"></script>-->
+
+<!--<script src="{{http_subpath}}/{{static_path}}/maps/js/starter.js"></script>-->
+
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/moment.min.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/locale/ru.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/spin.min.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/sugar.min.js"></script>
+<script src="{{ http_subpath }}/{{ static_path }}/js/lib/daterangepicker.js"></script>
+
+<script src="{{ http_subpath }}/{{ static_path }}/js/dashboard.js"></script>
+<!--<script src="{{http_subpath}}/{{static_path}}/js/starter.js"></script>-->
+</body>
+
+</html>
