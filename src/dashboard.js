@@ -1,4 +1,25 @@
 "use strict";
+import 'bootstrap/css/bootstrap.css!';
+import 'bootstrap-daterangepicker/daterangepicker.css!';
+import 'styles/styles.css!';
+import 'styles/dashboard.css!';
+import 'leaflet/dist/leaflet.css!';
+import 'dc/dc.css!';
+import $ from "jquery";
+import moment from "moment";
+import d3 from "d3";
+import L from "leaflet";
+import cytoscape from "cytoscape";
+import dc from "dc";
+import daterangepicker from "bootstrap-daterangepicker";
+import * as lhash from "leaflet-hash";
+import * as lmarkercluster from "leaflet.markercluster";
+import * as ctxmenu from "cytoscape-cxtmenu";
+import * as qtip from "qtip2";
+import * as cytoqtip from "cytoscape-qtip";
+import * as Autolinker from "autolinker";
+//import * as Raphael from "raphael";
+//import * as RaphaelIcon from "src/L.RaphaelIcon.js";
 
 var GREEN = "green";
 var RED = "red";
@@ -38,9 +59,8 @@ var refreshInterval;
 
 
 var maxDownloadedDateTime = '';
-
-var startDate = Date.create().addDays(-29);	// 30 days ago
-var endDate = Date.create(); 				// today
+var startDate = moment("2015-04-01"); //.subtract(29, 'days');	// 30 days ago
+var endDate = moment("2015-05-01"); 				// today
 
 var spinnerOpts = {
     lines: 13 // The number of lines to draw
@@ -353,39 +373,84 @@ init(startDate, endDate);
 
 
 function initDateRangePicker() {
-    var range = $('#range');
+    var range = $('#daterange');
 
     // Show the dates in the range input
-    range.val(startDate.format('{MM}/{dd}/{yyyy}') + ' - ' + endDate.format('{MM}/{dd}/{yyyy}'));
+    range.val(startDate.format('MM/DD/YYYY') + ' - ' + endDate.format('MM/DD/YYYY'));
 
-    range.daterangepicker({
 
-        startDate: startDate,
-        endDate: endDate,
-
-        ranges: {
-            'Сегодня': ['today', 'today'],
-            'Вчера': ['yesterday', 'yesterday'],
-            'Неделя': [Date.create().addDays(-6), 'today'],
-            'Месяц': [Date.create().addDays(-29), 'today']
-        }
-    }, function (start, end) {
-        startDate = start;
-        endDate = end;
-        loadInitialData(start, end);
-    });
+    range.daterangepicker(
+        {
+            startDate: startDate.toDate(),
+            endDate: endDate.toDate(),
+            language: "ru-RU",
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            ranges: {
+                'Сегодня': [moment(), moment()],
+                'Вчера': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Последние 7 дней': [moment().subtract(6, 'days'), moment()],
+                'Последние 30 дней': [moment().subtract(29, 'days'), moment()],
+                'Этот месяц': [moment().startOf('month'), moment().endOf('month')],
+                'Прошлый Месяц': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        },
+        function(start, end, label) {
+            startDate = moment(start);
+            endDate = moment(end);
+            loadInitialData(startDate, endDate);
+        });
 }
 
 initDateRangePicker();
 
-var sentTab = document.getElementById("sent_tab");
-var mapTab = document.getElementById("map_tab");
-var graphTab = document.getElementById("graph_tab");
-var sentPanel = document.getElementById("sent");
-var mapPanel = document.getElementById("map");
-var graphPanel = document.getElementById("graph");
 var map;
 var cy;
+
+var sentTab = $("#tab_sent");
+var mapTab = $("#tab_map");
+var graphTab = $("#tab_graph");
+var sentPanel = $("#sent");
+var mapPanel = $("#map");
+var graphPanel = $("#graph");
+
+var btnReset = $("#btn_reset");
+var btnRefresh = $("#btn_refresh");
+var btnDownload = $("#btn_download");
+
+var btnLayoutGrid = $("#btn_layout_grid");
+var btnLayoutSpread = $("#btn_layout_spread");
+var btnLayoutCircle = $("#btn_layout_circle");
+var btnLayoutBreadthfirst = $("#btn_layout_breadthfirst");
+var btnLayoutConcentric = $("#btn_layout_concentric");
+var btnLayoutCose = $("#btn_layout_cose");
+var btnLayoutNone = $("#btn_layout_none");
+
+var btnTableSortByDate = $("#table_sort_by_date");
+var btnTableSortByRetweets = $("#table_sort_by_retweets");
+var btnTableSortByFavorites = $("#table_sort_by_favorites");
+
+btnTableSortByDate.click(sortByDate);
+btnTableSortByRetweets.click(sortByRetweets);
+btnTableSortByFavorites.click(sortByFavorites);
+
+btnLayoutGrid.click(function(){changeLayout('grid')});
+btnLayoutSpread.click(function(){changeLayout('spread')});
+btnLayoutCircle.click(function(){changeLayout('circle')});
+btnLayoutBreadthfirst.click(function(){changeLayout('breadthfirst')});
+btnLayoutConcentric.click(function(){changeLayout('concentric')});
+btnLayoutCose.click(function(){changeLayout('cose')});
+btnLayoutNone.click(function(){changeLayout('none')});
+
+sentTab.click(switchToSent);
+mapTab.click(switchToMap);
+graphTab.click(switchToGraph);
+
+
+btnReset.click(resetCharts);
+btnRefresh.click(refreshDataClick);
+btnDownload.click(downloadNewClick);
 
 var currentLayout = graphLayouts.circle;
 
@@ -393,17 +458,30 @@ var $graphControl = $('#graph_control');
 //var $sliders = $('<div class="sliders"></div>');
 //$graphControl.append( $sliders );
 
+function resetCharts() {
+    dc.filterAll();
+    dc.renderAll();
+}
+
+function refreshDataClick() {
+    btnRefresh.toggleClass('active');
+    refreshDataSwitch();
+}
+
+function downloadNewClick() {
+    httpGet('api/messages/download_new');
+}
 
 function switchToSent() {
     dashboard.tab = "sent";
-    if (!sentTab.classList.contains('active')) {
-        mapTab.classList.remove('active');
-        graphTab.classList.remove('active');
-        sentTab.classList.add('active');
+    if (!sentTab.hasClass('active')) {
+        mapTab.removeClass('active');
+        graphTab.removeClass('active');
+        sentTab.addClass('active');
 
-        mapPanel.style.display = 'none';
-        graphPanel.style.display = 'none';
-        sentPanel.style.display = 'block';
+        mapPanel.css('display', 'none');
+        graphPanel.css('display', 'none');
+        sentPanel.css('display', 'block');
         //cy.resize();
         resize();
     }
@@ -411,43 +489,56 @@ function switchToSent() {
 }
 function switchToGraph() {
     dashboard.tab = "graph";
-    if (!graphTab.classList.contains('active')) {
-        mapTab.classList.remove('active');
-        graphTab.classList.add('active');
-        sentTab.classList.remove('active');
+    if (!graphTab.hasClass('active')) {
+        mapTab.removeClass('active');
+        graphTab.addClass('active');
+        sentTab.removeClass('active');
 
-        mapPanel.style.display = 'none';
-        graphPanel.style.display = 'block';
-        sentPanel.style.display = 'none';
+        mapPanel.css('display', 'none');
+        graphPanel.css('display', 'block');
+        sentPanel.css('display', 'none');
         //cy.resize();
         //resize();
     }
     loadGraphData(startDate, endDate);
 }
 
-function resize() {
-    map.invalidateSize();
-    cy.resize();
-    cy.center();
-    //cy.fit();
-    //cy.forceRender()
-}
-
-
 function switchToMap() {
     dashboard.tab = "map";
-    if (!mapTab.classList.contains('active')) {
-        mapTab.classList.add('active');
-        graphTab.classList.remove('active');
-        sentTab.classList.remove('active');
+    if (!mapTab.hasClass('active')) {
+        mapTab.addClass('active');
+        graphTab.removeClass('active');
+        sentTab.removeClass('active');
 
-        mapPanel.style.display = 'block';
-        graphPanel.style.display = 'none';
-        sentPanel.style.display = 'none';
+        mapPanel.css('display', 'block');
+        graphPanel.css('display', 'none');
+        sentPanel.css('display', 'none');
         //map.invalidateSize();
         populateMap(dataSource.messagesCache);
         resize();
     }
+}
+
+
+function resize() {
+    if (dashboard.tab == "map") {
+        resizeMap();
+    }
+    if (dashboard.tab == "graph") {
+        resizeGraph();
+    }
+
+}
+
+function resizeMap() {
+    map.invalidateSize();
+}
+
+function resizeGraph() {
+    cy.resize();
+    cy.center();
+    //cy.fit();
+    //cy.forceRender()
 }
 
 function changeLayout(layout) {
@@ -573,13 +664,13 @@ function reduceInitial() {
 }
 
 
-function startSpinner(divId) {
-    jQuery("#dataContainer").hide();
-    var spinnerTarget = document.getElementById(divId);
+//function startSpinner(divId) {
+//    $("#dataContainer").hide();
+//    var spinnerTarget = document.getElementById(divId);
 
-    var spinner = new Spinner(spinnerOpts).spin(spinnerTarget);
-    return spinner;
-}
+    //var spinner = new Spinner(spinnerOpts).spin(spinnerTarget);
+    //return spinner;
+//}
 
 
 function extractUser(message) {
@@ -1317,21 +1408,21 @@ function init(startDate, endDate) {
     loadInitialData(startDate, endDate);
 }
 
-function stopSpinner(spinner) {
-    spinner.stop();
-    jQuery("#dataContainer").show();
-}
+//function stopSpinner(spinner) {
+//    spinner.stop();
+//    $("#dataContainer").show();
+//}
 
 function loadInitialData(startDate, endDate) {
-    var from = startDate.format('{yyyy}-{MM}-{dd}');
-    var to = endDate.format('{yyyy}-{MM}-{dd}');
+    var from = startDate.format('YYYY-MM-DD');
+    var to = endDate.format('YYYY-MM-DD');
 
-    var spinner = startSpinner("spinner");
+    //var spinner = startSpinner("spinner");
 
     var url = 'api/messages/from/' + from + '/to/' + to + '/' + fromToLimit + '/' + fromToSkip;
     //d3.json("api/messages/all", function (json) {
     d3.json(url, function (json) {
-        stopSpinner(spinner);
+        //stopSpinner(spinner);
         var data = json.result;
 
         dataSource.init(data);
@@ -1341,12 +1432,12 @@ function loadInitialData(startDate, endDate) {
         //initGraph();
 
     });
-    return spinner;
+    //return spinner;
 }
 
 function loadGraphData(startDate, endDate) {
-    var from = startDate.format('{yyyy}-{MM}-{dd}');
-    var to = endDate.format('{yyyy}-{MM}-{dd}');
+    var from = startDate.format('YYYY-MM-DD');
+    var to = endDate.format('YYYY-MM-DD');
 
 
     var url = 'api/users/from/' + from + '/to/' + to + '/' + fromToLimit + '/' + fromToSkip;
@@ -1435,7 +1526,8 @@ function imgError(image, id_str) {
 function createTwitterHtml(message) {
     var res = '<div class="jstwitter">' +
         '<div class="item">' +
-        '<img class="avatar-img" src="' + message.user.profile_image_url + '" height="30px" onerror="imgError(this, \'' + message.user.id_str + '\');">' +
+        //'<img class="avatar-img" src="' + message.user.profile_image_url + '" height="30px" onerror="imgError(this, \'' + message.user.id_str + '\');">' +
+        '<img class="avatar-img" src="' + message.user.profile_image_url + '" height="30px">' +
         '<div class="tweet-wrapper">' +
         '<span class="text">' + '<span class="sentiment-' + message.Sentiment + '">' + message.text + '</span>' + '</span>' +
         ' от ' +
@@ -1472,7 +1564,7 @@ function createUserHtml(user) {
 
 var moscowLatLng = [55.750, 37.610];
 
-var map = L.map('map', {
+map = L.map('map', {
     attributionControl: false
 }).setView(moscowLatLng, 10);
 

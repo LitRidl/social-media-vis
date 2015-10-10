@@ -5,35 +5,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Аналитика</title>
+    <script src="jspm_packages/system.js"></script>
     <!--<link href="{{http_subpath}}/{{static_path}}/css/bootstrap.min.css" rel="stylesheet" media="all">-->
     <!--<link href="{{http_subpath}}/{{static_path}}/js/lib/leaflet/leaflet.css" rel="stylesheet" media="all">-->
     <!--<script src="{{http_subpath}}/{{static_path}}/js/lib/jquery-2.1.4.min.js"></script>-->
     <!--<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/4.10.3/css/bootstrap-slider.min.css">
-    <link rel="stylesheet" href="src/lib/jquery/jquery.qtip.min.css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/4.10.3/css/bootstrap-slider.min.css">-->
+    <!--<link rel="stylesheet" href="src/lib/jquery/jquery.qtip.min.css">-->
     <!--<link href="{{http_subpath}}/{{static_path}}/css/font-awesome.css" rel="stylesheet" media="all">-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">-->
     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css">-->
     <!--<link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css">-->
     <!--<link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css">-->
     <!--<link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css">-->
     <!--<link rel="stylesheet" href="{{http_subpath}}/{{static_path}}/js/lib/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css">-->
 
-    <link href="styles/daterangepicker.css" rel="stylesheet" media="all">
+    <!--<link href="styles/daterangepicker.css" rel="stylesheet" media="all">-->
 
-    <link rel="stylesheet" href="src/lib/leaflet/leaflet.css"/>
-    <link rel="stylesheet" href="src/lib/markercluster/MarkerCluster.Default.css"/>
-    <link rel="stylesheet" href="src/lib/markercluster/MarkerCluster.css"/>
+    <!--<link rel="stylesheet" href="src/lib/leaflet/leaflet.css"/>-->
+    <!--<link rel="stylesheet" href="src/lib/markercluster/MarkerCluster.Default.css"/>-->
+    <!--<link rel="stylesheet" href="src/lib/markercluster/MarkerCluster.css"/>-->
 
-    <link rel="stylesheet" href="styles/base.css"/>
-    <link rel="stylesheet" href="styles/legend.css"/>
-    <link rel="stylesheet" href="styles/popup.css"/>
-    <link rel="stylesheet" href="styles/misc.css"/>
+    <!--<link rel="stylesheet" href="styles/base.css"/>-->
+    <!--<link rel="stylesheet" href="styles/legend.css"/>-->
+    <!--<link rel="stylesheet" href="styles/popup.css"/>-->
+    <!--<link rel="stylesheet" href="styles/misc.css"/>-->
 
-    <link rel="stylesheet" type="text/css" href="styles/dc.css"/>
-    <link rel="stylesheet" type="text/css" href="styles/styles.css"/>
-    <link rel="stylesheet" type="text/css" href="styles/printfix.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="styles/dc.css"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="styles/styles.css"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="styles/dashboard.css"/>-->
+    <!--<link rel="stylesheet" type="text/css" href="styles/printfix.css"/>-->
 
 
 </head>
@@ -54,17 +56,17 @@
         </div>
         <div class="col-md-3">
             <ul class="nav nav-tabs navbar-header">
-                <li id="sent_tab" onclick="switchToSent()" class="active">
+                <li id="tab_sent" class="active">
                     <a class="white" href="#sent">
                         <i class="fa fa-bar-chart white"></i> Графы
                     </a>
                 </li>
-                <li id="map_tab" onclick="switchToMap()">
+                <li id="tab_map">
                     <a class="white" href="#map">
                         <i class="fa fa-globe white"></i> Карта
                     </a>
                 </li>
-                <li id="graph_tab" onclick="switchToGraph()">
+                <li id="tab_graph">
                     <a class="white" href="#graph">
                         <i class="fa fa-sitemap white"></i> Связи
                     </a>
@@ -85,26 +87,24 @@
                 </a>
             </li>
             <li>
-                <button class="hidden-print btn navbar-btn" onclick="dc.filterAll(); dc.renderAll();">
+                <button id="btn_reset" class="hidden-print btn navbar-btn">
                     <img src="images/cancelEnd.svg" title="Отмена" height="20px">
                 </button>
             </li>
             <li>
-                <button class="hidden-print btn navbar-btn"
-                        onclick="this.classList.toggle('active'); refreshDataSwitch();">
+                <button id="btn_refresh" class="hidden-print btn navbar-btn">
                     <img src="images/redo.svg"
                          title="Обновлять при появлении новых сообщений" height="20px">
                 </button>
             </li>
             <li>
-                <button class="hidden-print btn navbar-btn"
-                        onclick="httpGet('{{ http_subpath }}/api/messages/download_new')">
+                <button id="btn_download" class="hidden-print btn navbar-btn">
                     <img src="images/social-twitter.svg"
                          title="Закачать новые сообщения из Твиттера" height="20px">
                 </button>
             </li>
             <li>
-                <button class="hidden-print btn navbar-btn" id="range">
+                <button class="hidden-print btn navbar-btn" id="daterange">
                     <img src="images/calendar.svg" title="Задать фильтр по датам"
                          height="20px">
                 </button>
@@ -213,39 +213,16 @@
                 <!--<h2>Распределение</h2>-->
 
                 <div class="btn-group-vertical" role="group" aria-label="...">
-                    <button type="button" class="btn btn-small" onclick="changeLayout('grid');">
-                        Решетка
-                    </button>
-                    <!--<button type="button" class="btn btn-small" onclick="changeLayout('random');">-->
-                    <!--Случайное-->
-                    <!--</button>-->
-                    <button type="button" class="btn btn-small" onclick="changeLayout('spread');">
-                        Распределенный
-                    </button>
-                    <!--<button type="button" class="btn btn-small" onclick="changeLayout('springy');">-->
-                    <!--Springy-->
-                    <!--</button>-->
-                    <!--<button type="button" class="btn btn-small" onclick="changeLayout('arbor');">-->
-                    <!--Arbor-->
-                    <!--</button>-->
-                    <button type="button" class="btn btn-small" autofocus onclick="changeLayout('circle');">
-                        Круг
-                    </button>
-                    <button type="button" class="btn btn-small" onclick="changeLayout('cola');">
-                        Параметрическое
-                    </button>
-                    <button type="button" class="btn btn-small" onclick="changeLayout('breadthfirst');">
-                        Иерархическое
-                    </button>
-                    <button type="button" class="btn btn-small" onclick="changeLayout('concentric');">
-                        Концентрическое
-                    </button>
-                    <button type="button" class="btn btn-small" onclick="changeLayout('cose');">
-                        Кластерное
-                    </button>
-                    <button type="button" class="btn btn-small" onclick="changeLayout('none');">
-                        Без распределения
-                    </button>
+                    <button id="btn_layout_grid" type="button" class="btn btn-small">Решетка</button>
+                    <button id="btn_layout_spread" type="button" class="btn btn-small">Распределенный</button>
+                    <!--<button type="button" class="btn btn-small">Springy</button>-->
+                    <!--<button type="button" class="btn btn-small">Arbor</button>-->
+                    <button id="btn_layout_circle" type="button" class="btn btn-small" autofocus>Круг</button>
+                    <button id="btn_layout_cola" type="button" class="btn btn-small">Параметрическое</button>
+                    <button id="btn_layout_breadthfirst" type="button" class="btn btn-small">Иерархическое</button>
+                    <button id="btn_layout_concentric" type="button" class="btn btn-small">Концентрическое</button>
+                    <button id="btn_layout_cose" type="button" class="btn btn-small">Кластерное</button>
+                    <button id="btn_layout_none" type="button" class="btn btn-small">Без распределения</button>
                 </div>
                 <div id="sliders">
 
@@ -272,12 +249,12 @@
                     <th class="text-center">
                         Сообщения
                         <span class="pull-right">
-                            <img src="images/cal.svg" height="30px"
-                                 title="Сортировать по дате" onclick="sortByDate()">
-                            <img src="images/copy_clean.svg" height="30px"
-                                 title="Сортировать по числу ретвиттов" onclick="sortByRetweets()">
-                            <img src="images/heart.svg" height="30px"
-                                 title="Сортировать по числу избранных" onclick="sortByFavorites()">
+                            <img id="table_sort_by_date" src="images/cal.svg" height="30px"
+                                 title="Сортировать по дате">
+                            <img id="table_sort_by_retweets" src="images/copy_clean.svg" height="30px"
+                                 title="Сортировать по числу ретвиттов">
+                            <img id="table_sort_by_favorites" src="images/heart.svg" height="30px"
+                                 title="Сортировать по числу избранных">
                         </span>
                     </th>
                     <!--<th>Sentiment</th>-->
@@ -289,59 +266,64 @@
 </div>
 
 
-<script src="src/lib/lodash.js/3.10.0/lodash.min.js"></script>
-<script src="src/lib/jquery-2.1.4.min.js"></script>
-<script src="src/lib/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script src="src/libs/bootstrap-slider/4.10.3/bootstrap-slider.min.js"></script>
+<!--<script src="src/lib/lodash.js/3.10.0/lodash.min.js"></script>-->
+<!--<script src="src/lib/jquery-2.1.4.min.js"></script>-->
+<!--<script src="src/lib/bootstrap/3.3.5/js/bootstrap.min.js"></script>-->
+<!--<script src="src/libs/bootstrap-slider/4.10.3/bootstrap-slider.min.js"></script>-->
 <!--<script src="{{http_subpath}}/{{static_path}}/js/lib/bootstrap.min.js"></script>-->
-<script src="src/lib/d3.js"></script>
-<script src="src/lib/crossfilter.js"></script>
-<script src="src/lib/dc.js"></script>
+<!--<script src="src/lib/d3.js"></script>-->
+<!--<script src="src/lib/crossfilter.js"></script>-->
+<!--<script src="src/lib/dc.js"></script>-->
 <!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/arbor.js"></script>-->
-<script src="src/lib/cytoscape/cola.v3.min.js"></script>
+<!--<script src="src/lib/cytoscape/cola.v3.min.js"></script>-->
 <!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/dagre.js"></script>-->
-<script src="src/lib/cytoscape/foograph.js"></script>
-<script src="src/lib/cytoscape/rhill-voronoi-core.js"></script>
+<!--<script src="src/lib/cytoscape/foograph.js"></script>-->
+<!--<script src="src/lib/cytoscape/rhill-voronoi-core.js"></script>-->
 <!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/springy.js"></script>-->
-<script src="src/lib/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+<!--<script src="src/lib/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>-->
 <!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.arbor.js"></script>-->
-<script src="src/lib/cytoscape/layout.breadthfirst.js"></script>
-<script src="src/lib/cytoscape/layout.circle.js"></script>
-<script src="src/lib/cytoscape/layout.cola.js"></script>
-<script src="src/lib/cytoscape/layout.concentric.js"></script>
-<script src="src/lib/cytoscape/layout.cose.js"></script>
+<!--<script src="src/lib/cytoscape/layout.breadthfirst.js"></script>-->
+<!--<script src="src/lib/cytoscape/layout.circle.js"></script>-->
+<!--<script src="src/lib/cytoscape/layout.cola.js"></script>-->
+<!--<script src="src/lib/cytoscape/layout.concentric.js"></script>-->
+<!--<script src="src/lib/cytoscape/layout.cose.js"></script>-->
 <!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.dagre.js"></script>-->
-<script src="src/lib/cytoscape/layout.grid.js"></script>
-<script src="src/lib/cytoscape/layout.null.js"></script>
-<script src="src/lib/cytoscape/layout.preset.js"></script>
+<!--<script src="src/lib/cytoscape/layout.grid.js"></script>-->
+<!--<script src="src/lib/cytoscape/layout.null.js"></script>-->
+<!--<script src="src/lib/cytoscape/layout.preset.js"></script>-->
 <!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.random.js"></script>-->
-<script src="src/lib/cytoscape/layout.spread.js"></script>
+<!--<script src="src/lib/cytoscape/layout.spread.js"></script>-->
 <!--<script src="{{ http_subpath }}/{{ static_path }}/js/lib/cytoscape/layout.springy.js"></script>-->
-<script src="src/lib/cytoscape/cytoscape-cxtmenu.js"></script>
-<script src="src/lib/jquery/jquery.qtip.min.js"></script>
-<script src="src/lib/cytoscape/cytoscape-qtip.js"></script>
+<!--<script src="src/lib/cytoscape/cytoscape-cxtmenu.js"></script>-->
+<!--<script src="src/lib/jquery/jquery.qtip.min.js"></script>-->
+<!--<script src="src/lib/cytoscape/cytoscape-qtip.js"></script>-->
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>-->
 <!--<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js"></script>-->
 <!--<script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>-->
 <!--<script src="{{http_subpath}}/{{static_path}}/js/lib/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js"></script>-->
 
-<script src="src/lib/Autolinker.min.js"></script>
+<!--<script src="src/lib/Autolinker.min.js"></script>-->
 
-<script src="src/lib/leaflet/leaflet.js"></script>
-<script src="src/lib/leaflet-hash.js"></script>
-<script src="src/lib/markercluster/leaflet.markercluster.js"></script>
+<!--<script src="src/lib/leaflet/leaflet.js"></script>-->
+<!--<script src="src/lib/leaflet-hash.js"></script>-->
+<!--<script src="src/lib/markercluster/leaflet.markercluster.js"></script>-->
 
-<script src="src/lib/raphael-min.js"></script>
-<script src="src/L.RaphaelIcon.js"></script>
+<!--<script src="src/lib/raphael-min.js"></script>-->
+<!--<script src="src/L.RaphaelIcon.js"></script>-->
 
-<script src="src/lib/moment.min.js"></script>
-<script src="src/lib/locale/ru.js"></script>
-<script src="src/lib/spin.min.js"></script>
-<script src="src/lib/sugar.min.js"></script>
-<script src="src/lib/daterangepicker.js"></script>
+<!--<script src="src/lib/moment.min.js"></script>-->
+<!--<script src="src/lib/locale/ru.js"></script>-->
+<!--<script src="src/lib/spin.min.js"></script>-->
+<!--<script src="src/lib/sugar.min.js"></script>-->
+<!--<script src="src/lib/daterangepicker.js"></script>-->
 
-<script src="src/dashboard.js"></script>
+<!--<script src="src/dashboard.js"></script>-->
 <!--<script src="{{http_subpath}}/{{static_path}}/js/starter.js"></script>-->
+
+    <script src='config.js'></script>
+    <script>
+        System.import('src/dashboard').catch(console.error.bind(console));
+    </script>
 </body>
 
 </html>
