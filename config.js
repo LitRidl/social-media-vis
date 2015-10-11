@@ -26,6 +26,7 @@ System.config({
     "cytoscape-qtip": "npm:cytoscape-qtip@2.2.5",
     "d3": "github:mbostock/d3@3.5.6",
     "dc": "npm:dc@2.1.0-dev",
+    "font-awesome": "npm:font-awesome@4.4.0",
     "jquery": "github:components/jquery@2.1.4",
     "leaflet": "github:Leaflet/Leaflet@0.7.5",
     "leaflet-hash": "npm:leaflet-hash@0.2.1",
@@ -256,6 +257,9 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "create-hash": "npm:create-hash@1.1.2",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0"
+    },
+    "npm:font-awesome@4.4.0": {
+      "css": "github:systemjs/plugin-css@0.1.18"
     },
     "npm:hash.js@1.0.3": {
       "inherits": "npm:inherits@2.0.1"

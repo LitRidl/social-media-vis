@@ -1,8 +1,8 @@
 "use strict";
-import 'bootstrap/css/bootstrap.css!';
+//import 'bootstrap/css/bootstrap.css!';
 import 'bootstrap-daterangepicker/daterangepicker.css!';
-import 'styles/styles.css!';
-import 'styles/dashboard.css!';
+//import 'styles/styles.css!';
+//import 'styles/dashboard.css!';
 import 'leaflet/dist/leaflet.css!';
 import 'dc/dc.css!';
 import $ from "jquery";
