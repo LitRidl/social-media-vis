@@ -60,29 +60,48 @@ var refreshInterval;
 
 var maxDownloadedDateTime = '';
 var startDate = moment("2015-04-01"); //.subtract(29, 'days');	// 30 days ago
-var endDate = moment("2015-05-01"); 				// today
+var endDate = moment("2015-05-01"); // today
 
 var spinnerOpts = {
     lines: 13 // The number of lines to draw
-    , length: 28 // The length of each line
-    , width: 14 // The line thickness
-    , radius: 42 // The radius of the inner circle
-    , scale: 1 // Scales overall size of the spinner
-    , corners: 1 // Corner roundness (0..1)
-    , color: '#000' // #rgb or #rrggbb or array of colors
-    , opacity: 0.25 // Opacity of the lines
-    , rotate: 0 // The rotation offset
-    , direction: 1 // 1: clockwise, -1: counterclockwise
-    , speed: 1 // Rounds per second
-    , trail: 60 // Afterglow percentage
-    , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
-    , zIndex: 2e9 // The z-index (defaults to 2000000000)
-    , className: "spinner" // The CSS class to assign to the spinner
-    , top: "50%" // Top position relative to parent
-    , left: "50%" // Left position relative to parent
-    , shadow: false // Whether to render a shadow
-    , hwaccel: false // Whether to use hardware acceleration
-    , position: "absolute" // Element positioning
+        ,
+    length: 28 // The length of each line
+        ,
+    width: 14 // The line thickness
+        ,
+    radius: 42 // The radius of the inner circle
+        ,
+    scale: 1 // Scales overall size of the spinner
+        ,
+    corners: 1 // Corner roundness (0..1)
+        ,
+    color: '#000' // #rgb or #rrggbb or array of colors
+        ,
+    opacity: 0.25 // Opacity of the lines
+        ,
+    rotate: 0 // The rotation offset
+        ,
+    direction: 1 // 1: clockwise, -1: counterclockwise
+        ,
+    speed: 1 // Rounds per second
+        ,
+    trail: 60 // Afterglow percentage
+        ,
+    fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+        ,
+    zIndex: 2e9 // The z-index (defaults to 2000000000)
+        ,
+    className: "spinner" // The CSS class to assign to the spinner
+        ,
+    top: "50%" // Top position relative to parent
+        ,
+    left: "50%" // Left position relative to parent
+        ,
+    shadow: false // Whether to render a shadow
+        ,
+    hwaccel: false // Whether to use hardware acceleration
+        ,
+    position: "absolute" // Element positioning
 };
 
 var layout;
@@ -101,10 +120,8 @@ graphLayouts.cola = {
     boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
 
     // layout event callbacks
-    ready: function () {
-    }, // on layoutready
-    stop: function () {
-    }, // on layoutstop
+    ready: function () {}, // on layoutready
+    stop: function () {}, // on layoutstop
 
     // positioning options
     randomize: false, // use random node positions at beginning of layout
@@ -129,23 +146,22 @@ graphLayouts.cola = {
 
     edgeLengthVal: 10,
     nodeSpacing: 20,
-    sliders: [
-        {
-            label: 'Длинна ребер',
-            param: 'edgeLengthVal',
-            min: 1,
-            max: 200
-        },
+    sliders: [{
+                label: 'Длинна ребер',
+                param: 'edgeLengthVal',
+                min: 1,
+                max: 200
+            },
 
-        {
-            label: 'Расстояние между вершинами',
-            param: 'nodeSpacing',
-            min: 1,
-            max: 50
-        }
-    ]
-    // infinite layout options
-    //infinite: true // overrides all other options for a forces-all-the-time mode
+            {
+                label: 'Расстояние между вершинами',
+                param: 'nodeSpacing',
+                min: 1,
+                max: 50
+            }
+        ]
+        // infinite layout options
+        //infinite: true // overrides all other options for a forces-all-the-time mode
 };
 
 
@@ -193,8 +209,7 @@ graphLayouts.grid = {
     avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
     rows: undefined, // force num of rows in the grid
     columns: undefined, // force num of cols in the grid
-    position: function (node) {
-    }, // returns { row, col } for element
+    position: function (node) {}, // returns { row, col } for element
     sort: undefined, // a sorting function to order the nodes; e.g. function(a, b){ return a.data('weight') - b.data('weight') }
     animate: true, // whether to transition the node positions
     animationDuration: 1500, // duration of animation in ms if enabled
@@ -356,12 +371,12 @@ graphLayouts.circle = {
     animate: true,
     animationDuration: 4000,
     avoidOverlap: true
-    //concentric: function (node) { // returns numeric value for each node, placing higher nodes in levels towards the centre
-    //    return node.degree();
-    //},
-    //levelWidth: function (nodes) { // the variation of concentric values in each level
-    //    return nodes.maxDegree() / 4;
-    //}
+        //concentric: function (node) { // returns numeric value for each node, placing higher nodes in levels towards the centre
+        //    return node.degree();
+        //},
+        //levelWidth: function (nodes) { // the variation of concentric values in each level
+        //    return nodes.maxDegree() / 4;
+        //}
 };
 
 var fromToLimit = -1;
@@ -379,8 +394,7 @@ function initDateRangePicker() {
     range.val(startDate.format('MM/DD/YYYY') + ' - ' + endDate.format('MM/DD/YYYY'));
 
 
-    range.daterangepicker(
-        {
+    range.daterangepicker({
             startDate: startDate.toDate(),
             endDate: endDate.toDate(),
             language: "ru-RU",
@@ -396,7 +410,7 @@ function initDateRangePicker() {
                 'Прошлый Месяц': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             }
         },
-        function(start, end, label) {
+        function (start, end, label) {
             startDate = moment(start);
             endDate = moment(end);
             loadInitialData(startDate, endDate);
@@ -435,13 +449,27 @@ btnTableSortByDate.click(sortByDate);
 btnTableSortByRetweets.click(sortByRetweets);
 btnTableSortByFavorites.click(sortByFavorites);
 
-btnLayoutGrid.click(function(){changeLayout('grid')});
-btnLayoutSpread.click(function(){changeLayout('spread')});
-btnLayoutCircle.click(function(){changeLayout('circle')});
-btnLayoutBreadthfirst.click(function(){changeLayout('breadthfirst')});
-btnLayoutConcentric.click(function(){changeLayout('concentric')});
-btnLayoutCose.click(function(){changeLayout('cose')});
-btnLayoutNone.click(function(){changeLayout('none')});
+btnLayoutGrid.click(function () {
+    changeLayout('grid')
+});
+btnLayoutSpread.click(function () {
+    changeLayout('spread')
+});
+btnLayoutCircle.click(function () {
+    changeLayout('circle')
+});
+btnLayoutBreadthfirst.click(function () {
+    changeLayout('breadthfirst')
+});
+btnLayoutConcentric.click(function () {
+    changeLayout('concentric')
+});
+btnLayoutCose.click(function () {
+    changeLayout('cose')
+});
+btnLayoutNone.click(function () {
+    changeLayout('none')
+});
 
 sentTab.click(switchToSent);
 mapTab.click(switchToMap);
@@ -487,6 +515,7 @@ function switchToSent() {
     }
 
 }
+
 function switchToGraph() {
     dashboard.tab = "graph";
     if (!graphTab.hasClass('active')) {
@@ -584,7 +613,7 @@ function makeSlider(sliderParams) {
 }
 
 function removeSliders() {
-    $( ".param" ).remove();
+    $(".param").remove();
 }
 
 
@@ -668,8 +697,8 @@ function reduceInitial() {
 //    $("#dataContainer").hide();
 //    var spinnerTarget = document.getElementById(divId);
 
-    //var spinner = new Spinner(spinnerOpts).spin(spinnerTarget);
-    //return spinner;
+//var spinner = new Spinner(spinnerOpts).spin(spinnerTarget);
+//return spinner;
 //}
 
 
@@ -710,6 +739,7 @@ function extractUser(message) {
 
     return user;
 }
+
 function init(startDate, endDate) {
     dataSource = {
         messagesCache: Object.create(null), //create real map/dict, without inherited properties
@@ -964,7 +994,12 @@ function init(startDate, endDate) {
                 height: 150,
                 elasticX: true,
                 renderLabel: true,
-                margrins: {top: 10, right: 15, bottom: 20, left: 15},
+                margrins: {
+                    top: 10,
+                    right: 15,
+                    bottom: 20,
+                    left: 15
+                },
                 xAxisTicks: 3,
                 ordering: function (d) {
                     return -d.value;
@@ -977,7 +1012,12 @@ function init(startDate, endDate) {
                 height: 290,
                 elasticX: true,
                 renderLabel: true,
-                margrins: {top: 10, right: 15, bottom: 20, left: 15},
+                margrins: {
+                    top: 10,
+                    right: 15,
+                    bottom: 20,
+                    left: 15
+                },
                 xAxisTicks: 3,
                 ordering: function (d) {
                     return -d.value;
@@ -1002,8 +1042,18 @@ function init(startDate, endDate) {
                 type: "composite",
                 width: 680,
                 height: 220,
-                margrins: {top: 20, right: 30, bottom: 20, left: 30},
-                legend: {x: 500, y: 10, height: 13, gap: 5},
+                margrins: {
+                    top: 20,
+                    right: 30,
+                    bottom: 20,
+                    left: 30
+                },
+                legend: {
+                    x: 500,
+                    y: 10,
+                    height: 13,
+                    gap: 5
+                },
                 elasticY: true,
                 renderTitle: true,
                 brushOn: false,
@@ -1017,8 +1067,18 @@ function init(startDate, endDate) {
                 type: "composite",
                 width: 1300,
                 height: 220,
-                margrins: {top: 10, right: 30, bottom: 20, left: 30},
-                legend: {x: 1150, y: 10, height: 13, gap: 5},
+                margrins: {
+                    top: 10,
+                    right: 30,
+                    bottom: 20,
+                    left: 30
+                },
+                legend: {
+                    x: 1150,
+                    y: 10,
+                    height: 13,
+                    gap: 5
+                },
                 elasticY: true,
                 brushOn: false,
                 xAxisTicks: 10,
@@ -1029,7 +1089,12 @@ function init(startDate, endDate) {
                 type: "bar",
                 width: 1350,
                 height: 150,
-                margrins: {top: 10, right: 30, bottom: 20, left: 30},
+                margrins: {
+                    top: 10,
+                    right: 30,
+                    bottom: 20,
+                    left: 30
+                },
                 elasticY: true,
                 renderTitle: true,
                 renderHorizontalGridLines: true,
@@ -1169,7 +1234,7 @@ function init(startDate, endDate) {
                 widget.data(params.data);
             }
             if (params.hasOwnProperty("multivalue")) {
-                widget.filterHandler(function (dimension, filters) {  //custom filter for multivalue fields
+                widget.filterHandler(function (dimension, filters) { //custom filter for multivalue fields
                     dimension.filter(null);
                     if (filters.length === 0) {
                         dimension.filter(null);
@@ -1212,14 +1277,11 @@ function init(startDate, endDate) {
             function rangesEqual(range1, range2) {
                 if (!range1 && !range2) {
                     return true;
-                }
-                else if (!range1 || !range2) {
+                } else if (!range1 || !range2) {
                     return false;
-                }
-                else if (range1.length === 0 && range2.length === 0) {
+                } else if (range1.length === 0 && range2.length === 0) {
                     return true;
-                }
-                else if (range1[0].valueOf() === range2[0].valueOf() &&
+                } else if (range1[0].valueOf() === range2[0].valueOf() &&
                     range1[1].valueOf() === range2[1].valueOf()) {
                     return true;
                 }
@@ -1286,89 +1348,74 @@ function init(startDate, endDate) {
         init: function (dataSource, startDate, endDate) {
             this.dataSource = dataSource;
 
-            this.initWidget(this.widgets.topicsRowChart,
-                {
-                    dimension: dataSource.topicsDim,
-                    group: dataSource.topicsGroup
-                });
+            this.initWidget(this.widgets.topicsRowChart, {
+                dimension: dataSource.topicsDim,
+                group: dataSource.topicsGroup
+            });
 
-            this.initWidget(this.widgets.usersRowChart,
-                {
-                    dimension: dataSource.userDim,
-                    group: dataSource.userGroup
-                });
+            this.initWidget(this.widgets.usersRowChart, {
+                dimension: dataSource.userDim,
+                group: dataSource.userGroup
+            });
 
-            this.initWidget(this.widgets.sentimentDonutChart,
-                {
-                    dimension: dataSource.sentimentDim,
-                    group: dataSource.tweetsBySentiment
-                });
+            this.initWidget(this.widgets.sentimentDonutChart, {
+                dimension: dataSource.sentimentDim,
+                group: dataSource.tweetsBySentiment
+            });
 
-            this.initWidget(this.widgets.sentimentAreaChart,
-                {
-                    dimension: dataSource.dateDim,
-                    group: [
-                        {
-                            name: 'Положительные',
-                            group: dataSource.positiveTweetsByDay,
-                            color: GREEN,
-                            renderArea: true
-                        },
-                        {
-                            name: 'Отрицательные',
-                            group: dataSource.negativeTweetsByDay,
-                            color: RED,
-                            renderArea: true
-                        }
-                    ],
-                    dates: [startDate, endDate]
-                });
+            this.initWidget(this.widgets.sentimentAreaChart, {
+                dimension: dataSource.dateDim,
+                group: [{
+                    name: 'Положительные',
+                    group: dataSource.positiveTweetsByDay,
+                    color: GREEN,
+                    renderArea: true
+                }, {
+                    name: 'Отрицательные',
+                    group: dataSource.negativeTweetsByDay,
+                    color: RED,
+                    renderArea: true
+                }],
+                dates: [startDate, endDate]
+            });
 
-            this.initWidget(this.widgets.comparatorLineChart,
-                {
-                    dimension: dataSource.dateDim,
-                    group: [
-                        {
-                            name: 'Роснефть',
-                            group: dataSource.rosneftTweetsByDay,
-                            color: GREEN,
-                            renderArea: true
-                        },
-                        {
-                            name: 'Транснефть',
-                            group: dataSource.transneftTweetsByDay,
-                            color: RED,
-                            renderArea: true
-                        },
-                        {
-                            name: 'Газпромнефть',
-                            group: dataSource.gazpromneftTweetsByDay,
-                            color: BLUE,
-                            renderArea: true
-                        },
-                        {
-                            name: 'ТНК-BP',
-                            group: dataSource.tnkbpTweetsByDay,
-                            color: MAGENTA,
-                            renderArea: true
-                        },
-                        {
-                            name: 'Лукоил',
-                            group: dataSource.luckoilTweetsByDay,
-                            color: ORANGE,
-                            renderArea: true
-                        }
-                    ],
-                    dates: [startDate, endDate]
-                });
+            this.initWidget(this.widgets.comparatorLineChart, {
+                dimension: dataSource.dateDim,
+                group: [{
+                    name: 'Роснефть',
+                    group: dataSource.rosneftTweetsByDay,
+                    color: GREEN,
+                    renderArea: true
+                }, {
+                    name: 'Транснефть',
+                    group: dataSource.transneftTweetsByDay,
+                    color: RED,
+                    renderArea: true
+                }, {
+                    name: 'Газпромнефть',
+                    group: dataSource.gazpromneftTweetsByDay,
+                    color: BLUE,
+                    renderArea: true
+                }, {
+                    name: 'ТНК-BP',
+                    group: dataSource.tnkbpTweetsByDay,
+                    color: MAGENTA,
+                    renderArea: true
+                }, {
+                    name: 'Лукоил',
+                    group: dataSource.luckoilTweetsByDay,
+                    color: ORANGE,
+                    renderArea: true
+                }],
+                dates: [startDate, endDate]
+            });
 
-            this.initWidget(this.widgets.totalTweetsBarChart,
-                {
-                    dimension: dataSource.dateDim,
-                    group: dataSource.dateTweets,
-                    dates: [startDate, endDate],
-                    focusCharts: [this.widgets.sentimentAreaChart, this.widgets.comparatorLineChart]
-                });
+            this.initWidget(this.widgets.totalTweetsBarChart, {
+                dimension: dataSource.dateDim,
+                group: dataSource.dateTweets,
+                dates: [startDate, endDate],
+                focusCharts: [this.widgets.sentimentAreaChart, this.widgets.comparatorLineChart]
+            });
 
             //this.widgets.totalTweetsBarChart.on("filtered", function (chart, filter) {
             //    dashboard.update();
@@ -1376,16 +1423,14 @@ function init(startDate, endDate) {
             //});
 
 
-            this.initWidget(this.widgets.dataTable,
-                {
-                    dimension: dataSource.dateDim
-                });
+            this.initWidget(this.widgets.dataTable, {
+                dimension: dataSource.dateDim
+            });
 
-            this.initWidget(this.widgets.total,
-                {
-                    dimension: dataSource.crossData,
-                    group: dataSource.groupdata
-                });
+            this.initWidget(this.widgets.total, {
+                dimension: dataSource.crossData,
+                group: dataSource.groupdata
+            });
 
 
             dc.renderAll();
@@ -1536,8 +1581,8 @@ function createTwitterHtml(message) {
         '<span class="time">' +
         '<a href="http://twitter.com/' + message.user.screen_name + '/status/' + message.id_str + '" target="_blank">' + ruDateTimeFormat(message.date) + '</a>  ' +
         '</span>' +
-        ( message.retweet_count > 0 ? ' <img src="' + 'images/copy_clean.svg" title="Репост" height="15px">' + message.retweet_count : '' ) +
-        ( message.favorite_count > 0 ? ' <img src="' + 'images/heart.svg" title="Избранное" height="15px">' + message.favorite_count : '' ) +
+        (message.retweet_count > 0 ? ' <img src="' + 'images/copy_clean.svg" title="Репост" height="15px">' + message.retweet_count : '') +
+        (message.favorite_count > 0 ? ' <img src="' + 'images/heart.svg" title="Избранное" height="15px">' + message.favorite_count : '') +
         '</div>' +
         '</div>' +
         '</div>';
@@ -1588,7 +1633,9 @@ var SentimentMarker = L.Marker.extend({
 var colours = ['#00FF00', '#FF0000', '#BBBBBB'];
 var colour_labels = ['Положительная', 'Негативная', 'Нейтральная'];
 
-var legend = L.control({position: 'bottomright'});
+var legend = L.control({
+    position: 'bottomright'
+});
 
 legend.onAdd = function (map) {
     var div = $('<div/>', {
@@ -1727,16 +1774,13 @@ var generateTweetData = function (tweet) {
         return text;
     };
 
-    return [
-        {
+    return [{
             'title': 'Ссылка',
             'content': Autolinker.link('https://twitter.com/statuses/' + tweet['id_str'])
-        },
-        {
+        }, {
             'title': 'Текст',
             'content': linkify(tweet['text'])
-        },
-        {
+        }, {
             'title': 'Тональность',
             'content': {
                 'pos': 'Положительная',
@@ -1744,16 +1788,13 @@ var generateTweetData = function (tweet) {
                 'neut': 'Нейтральная',
                 'none': 'Отсутствует'
             }[tweet['Sentiment']]
-        },
-        {
+        }, {
             'title': 'Количество ретвитов',
             'content': tweet['retweet_count']
-        },
-        {
+        }, {
             'title': 'Пользователь',
             'content': (tweet['user']['name'] + ' (' + linkify('@' + tweet['user']['screen_name']) + ')')
-        },
-        {
+        }, {
             'title': (tweet['Topic'].length === 1) ? 'Тема' : 'Темы',
             'content': tweet['Topic'].join(', ')
         }
@@ -1956,11 +1997,11 @@ function initGraph() {
             id: user.id_str,
             name: user.screen_name,
             followersCount: user.followers_count
-            //, degree: message.retweet_count + message.favorite_count
+                //, degree: message.retweet_count + message.favorite_count
         };
         cytoNodes.push({
             data: node
-            //style: { 'background-image': message.user_image_url }
+                //style: { 'background-image': message.user_image_url }
         });
 
         cytoStyle.selector('#' + user.id_str)
@@ -1981,11 +2022,11 @@ function initGraph() {
                     id: user.id_str + friendId,
                     source: user.id_str,
                     target: friendId
-                    //, degree: message.retweet_count + message.favorite_count
+                        //, degree: message.retweet_count + message.favorite_count
                 };
                 cytoEdges.push({
                     data: edge
-                    //style: { 'background-image': message.user_image_url }
+                        //style: { 'background-image': message.user_image_url }
                 });
             }
 
@@ -2022,28 +2063,24 @@ function initGraph() {
     var defaults = {
         menuRadius: 100,
         selector: 'node', // elements matching this Cytoscape.js selector will trigger cxtmenus
-        commands: [
-            {
-                content: 'Развернуть',
-                select: function () {
-                    console.log(this.id());
-                }
-            },
-            {
-                content: 'Свернуть',
-                select: function () {
-                    console.log(this.id());
-                }
-            },
-            {
-                content: 'Убрать',
-                select: function () {
-                    console.log("removing node " + this.id());
-                    var node = cy.$("#" + this.id());
-                    cy.remove(node);
-                }
+        commands: [{
+            content: 'Развернуть',
+            select: function () {
+                console.log(this.id());
             }
-        ],
+        }, {
+            content: 'Свернуть',
+            select: function () {
+                console.log(this.id());
+            }
+        }, {
+            content: 'Убрать',
+            select: function () {
+                console.log("removing node " + this.id());
+                var node = cy.$("#" + this.id());
+                cy.remove(node);
+            }
+        }],
         fillColor: 'rgba(0, 0, 0, 0.75)',
         activeFillColor: 'rgba(92, 194, 237, 0.75)',
         activePadding: 5,
@@ -2148,5 +2185,3 @@ function updateGraph() {
 //// photos from flickr with creative commons license
 //    initGraph();
 //}); // on dom ready
-
-

@@ -8,7 +8,7 @@ gulp.task('test', function (done) {
     karma.start({
         configFile: __dirname + '/../../karma.conf.js',
         singleRun: true
-    }, function(e) {
+    }, function (e) {
         done();
     });
 });
@@ -19,7 +19,7 @@ gulp.task('test', function (done) {
 gulp.task('tdd', function (done) {
     karma.start({
         configFile: __dirname + '/../../karma.conf.js'
-    }, function(e) {
+    }, function (e) {
         done();
     });
 });
@@ -28,19 +28,19 @@ gulp.task('tdd', function (done) {
  * Run test once with code coverage and exit
  */
 gulp.task('cover', function (done) {
-  karma.start({
-    configFile: __dirname + '/../../karma.conf.js',
-    singleRun: true,
-    reporters: ['coverage'],
-    preprocessors: {
-      'test/**/*.js': ['babel'],
-      'src/**/*.js': ['babel', 'coverage']
-    },
-    coverageReporter: {
-      type: 'html',
-      dir: 'build/reports/coverage'
-    }
-  }, function (e) {
-    done();
-  });
+    karma.start({
+        configFile: __dirname + '/../../karma.conf.js',
+        singleRun: true,
+        reporters: ['coverage'],
+        preprocessors: {
+            'test/**/*.js': ['babel'],
+            'src/**/*.js': ['babel', 'coverage']
+        },
+        coverageReporter: {
+            type: 'html',
+            dir: 'build/reports/coverage'
+        }
+    }, function (e) {
+        done();
+    });
 });
