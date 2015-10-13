@@ -1,7 +1,21 @@
 {
   "name": "avl-analytics",
+  "description": "Social media monitoring focused on social network analysis and profound graph and geotemporal analytics",
   "version": "0.0.1",
-  "description": "avl analytics",
+  "homepage": "https://github.com/LitRidl/avl-smm",
+  "private": true,
+  "authors": [
+    "Anton Smirnitskiy <for.anton01@gmail.com>",
+    "Michael Ridley <litridl@gmail.com>",
+    "Igor Stepanov <wazar.leollone@gmail.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/LitRidl/avl-smm/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/LitRidl/avl-smm.git"
+  },
   "main": "gulpfile.js",
   "directories": {
     "doc": "doc",
@@ -11,11 +25,6 @@
   "scripts": {
     "test": "test"
   },
-  "keywords": [
-    "avl"
-  ],
-  "author": "",
-  "license": "ISC",
   "jspm": {
     "directories": {
       "doc": "doc",
@@ -38,6 +47,7 @@
       "leaflet.markercluster": "npm:leaflet.markercluster@^0.4.0",
       "moment": "github:moment/moment@^2.10.6",
       "qtip2": "npm:qtip2@^2.2.0",
+      "raphael": "github:DmitryBaranovskiy/raphael@^2.1.4",
       "sugar": "npm:sugar@^1.4.1"
     },
     "devDependencies": {
@@ -59,6 +69,7 @@
     "gulp-plumber": "^1.0.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-yuidoc": "^0.1.2",
+    "jspm": "^0.16.12",
     "karma": "^0.13.10",
     "proxy-middleware": "^0.14.0",
     "require-dir": "^0.3.0",

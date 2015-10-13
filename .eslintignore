@@ -1,0 +1,8 @@
+node_modules/
+bower_components/
+
+# Ignore files compiled from TypeScript, Dart and CoffeeScript
+**/*.{ts,coffee,dart}.js
+
+.tmp/
+dist/
