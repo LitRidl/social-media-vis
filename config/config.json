@@ -1,0 +1,262 @@
+{
+    "db_size": {
+        "height": 3,
+        "width": 4
+    },
+    "central": [
+        {
+            "name": "sentimentDistribution",
+            "type": "pie",
+            "dashboard": {
+                "height": 1,
+                "width": 1,
+                "posX": 1,
+                "posY": 1
+            },
+            "size": {
+                "width": 210,
+                "height": 210
+            },
+            "widget_params": {
+                "radius": 100,
+                "innerRadius": 40,
+                "renderTitle": true,
+                "colors": [
+                    "red",
+                    "teal",
+                    "green"
+                ],
+                "label": "function (d) { return d.rus_tonality; }"
+            }
+        },
+        {
+            "name": "totalSentiment",
+            "type": "area",
+            "dashboard": {
+                "height": 1,
+                "width": 2,
+                "posX": 2,
+                "posY": 1
+            },
+            "size": {
+                "width": 680,
+                "height": 220
+            },
+            "margrins": {
+                "top": 20,
+                "right": 30,
+                "bottom": 20,
+                "left": 30
+            },
+            "legend": {
+                "x": 500,
+                "y": 10,
+                "height": 13,
+                "gap": 5
+            },
+            "widget_params": {
+                "brushOn": false,
+                "renderTitle": true,
+                "label": "function (d) { return d.value; }"
+            },
+            "xAxis": {
+                "ticks": 5,
+                "timeScale": "hour"
+            },
+            "yAxis": {
+                "elastic": true
+            }
+        },
+        {
+            "name": "totalTweets",
+            "type": "number",
+            "dashboard": {
+                "height": 1,
+                "width": 1,
+                "posX": 4,
+                "posY": 1
+            },
+            "size": {
+                "width": 200,
+                "height": 200
+            },
+            "margrins": {
+                "top": 10,
+                "right": 30,
+                "bottom": 20,
+                "left": 30
+            },
+            "widget_params": {
+                "size": "Infinity",
+                "type": "twitter"
+            }
+        },
+        {
+            "name": "comparatorAll",
+            "type": "area",
+            "dashboard": {
+                "height": 1,
+                "width": 4,
+                "posX": 1,
+                "posY": 2
+            },
+            "size": {
+                "width": 1300,
+                "height": 220
+            },
+            "margrins": {
+                "top": 10,
+                "right": 30,
+                "bottom": 20,
+                "left": 30
+            },
+            "legend": {
+                "x": 1150,
+                "y": 10,
+                "height": 13,
+                "gap": 5
+            },
+            "widget_params": {
+                "brushOn": false,
+                "renderTitle": true,
+                "label": "function (d) { return d.value; }"
+            },
+            "xAxis": {
+                "ticks": 10,
+                "timeScale": "hour"
+            },
+            "yAxis": {
+                "elastic": true
+            }
+        }
+    ],
+    "left_sidebar": [
+        {
+            "name": "topTopics",
+            "type": "histogram",
+            "dashboard": {
+                "height": 1,
+                "width": 1,
+                "posX": 1,
+                "posY": 1
+            },
+            "size": {
+                "width": 150,
+                "height": 150
+            },
+            "margrins": {
+                "top": 10,
+                "right": 15,
+                "bottom": 20,
+                "left": 15
+            },
+            "widget_params": {
+                "renderLabel": true,
+                "sortBy": "function (d) { return -d.value;}",
+                "multivalue": true
+            },
+            "xAxis": {
+                "ticks": 3,
+                "elastic": true
+            }
+        },
+        {
+            "name": "topUsers",
+            "type": "histogram",
+            "dashboard": {
+                "height": 1,
+                "width": 1,
+                "posX": 1,
+                "posY": 2
+            },
+            "size": {
+                "height": 290,
+                "width": 150
+            },
+            "margrins": {
+                "top": 10,
+                "right": 15,
+                "bottom": 20,
+                "left": 15
+            },
+            "widget_params": {
+                "renderLabel": true,
+                "sortBy": "function (d) { return -d.value;}",
+                "top": 10
+            },
+            "xAxis": {
+                "ticks": 3,
+                "elastic": true
+            }
+        }
+    ],
+    "right_sidebar": [],
+    "bottom": [
+        {
+            "name": "timeline",
+            "type": "bar",
+            "dashboard": {
+                "height": 1,
+                "width": 4,
+                "posX": 1,
+                "posY": 1
+            },
+            "size": {
+                "width": 1350,
+                "height": 150
+            },
+            "margrins": {
+                "top": 10,
+                "right": 30,
+                "bottom": 20,
+                "left": 30
+            },
+            "legend": {
+                "x": 1150,
+                "y": 10,
+                "height": 13,
+                "gap": 5
+            },
+            "widget_params": {
+                "brushOn": false,
+                "renderTitle": true,
+                "renderHorizontalGridLines": true,
+                "label": "function (d) { return d.value; }",
+                "centerBar": true
+            },
+            "xAxis": {
+                "ticks": 8,
+                "timeScale": "hour"
+            },
+            "yAxis": {
+                "ticks": 8,
+                "elastic": true
+            }
+        },
+        {
+            "name": "messages",
+            "type": "table",
+            "transitionDuration": 1500,
+            "dashboard": {
+                "height": 2,
+                "width": 4,
+                "posX": 1,
+                "posY": 2
+            },
+            "size": {
+                "width": 1350,
+                "height": 150
+            },
+            "margrins": {
+                "top": 10,
+                "right": 30,
+                "bottom": 20,
+                "left": 30
+            },
+            "widget_params": {
+                "size": "Infinity",
+                "type": "twitter"
+            }
+        }
+    ]
+}

@@ -7,6 +7,7 @@ dist/
 .cache
 .eslintcache
 .sass-cache/
+.idea
 coverage/
 build/reports
 
