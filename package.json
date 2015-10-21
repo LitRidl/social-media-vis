@@ -48,7 +48,8 @@
       "moment": "github:moment/moment@^2.10.6",
       "qtip2": "npm:qtip2@^2.2.0",
       "raphael": "github:DmitryBaranovskiy/raphael@^2.1.4",
-      "sugar": "npm:sugar@^1.4.1"
+      "sugar": "npm:sugar@^1.4.1",
+      "vivagraphjs": "npm:vivagraphjs@^0.8.1"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",

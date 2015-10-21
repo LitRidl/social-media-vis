@@ -35,6 +35,7 @@ System.config({
     "qtip2": "npm:qtip2@2.2.0",
     "raphael": "github:DmitryBaranovskiy/raphael@2.1.4",
     "sugar": "npm:sugar@1.4.1",
+    "vivagraphjs": "npm:vivagraphjs@0.8.1",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
@@ -296,6 +297,37 @@ System.config({
     "npm:moment@2.10.6": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:ngraph.centrality@0.1.3": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:ngraph.forcelayout@0.0.21": {
+      "ngraph.physics.simulator": "npm:ngraph.physics.simulator@0.0.11"
+    },
+    "npm:ngraph.fromjson@0.1.7": {
+      "ngraph.graph": "npm:ngraph.graph@0.0.11"
+    },
+    "npm:ngraph.generators@0.0.15": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "ngraph.graph": "npm:ngraph.graph@0.0.11",
+      "ngraph.random": "npm:ngraph.random@0.0.1",
+      "path": "github:jspm/nodelibs-path@0.1.0"
+    },
+    "npm:ngraph.graph@0.0.11": {
+      "ngraph.events": "npm:ngraph.events@0.0.3"
+    },
+    "npm:ngraph.physics.simulator@0.0.11": {
+      "ngraph.expose": "npm:ngraph.expose@0.0.0",
+      "ngraph.merge": "npm:ngraph.merge@0.0.1",
+      "ngraph.physics.primitives": "npm:ngraph.physics.primitives@0.0.7",
+      "ngraph.quadtreebh": "npm:ngraph.quadtreebh@0.0.3",
+      "ngraph.random": "npm:ngraph.random@0.0.1"
+    },
+    "npm:ngraph.quadtreebh@0.0.3": {
+      "ngraph.random": "npm:ngraph.random@0.0.1"
+    },
+    "npm:ngraph.tojson@0.1.3": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:pako@0.2.8": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
@@ -358,6 +390,9 @@ System.config({
       "inherits": "npm:inherits@2.0.1",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
+    "npm:simplesvg@0.0.10": {
+      "add-event-listener": "npm:add-event-listener@0.0.1"
+    },
     "npm:stream-browserify@1.0.0": {
       "events": "github:jspm/nodelibs-events@0.1.1",
       "inherits": "npm:inherits@2.0.1",
@@ -372,6 +407,20 @@ System.config({
     "npm:util@0.10.3": {
       "inherits": "npm:inherits@2.0.1",
       "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:vivagraphjs@0.8.1": {
+      "gintersect": "npm:gintersect@0.1.0",
+      "ngraph.centrality": "npm:ngraph.centrality@0.1.3",
+      "ngraph.events": "npm:ngraph.events@0.0.3",
+      "ngraph.forcelayout": "npm:ngraph.forcelayout@0.0.21",
+      "ngraph.fromjson": "npm:ngraph.fromjson@0.1.7",
+      "ngraph.generators": "npm:ngraph.generators@0.0.15",
+      "ngraph.graph": "npm:ngraph.graph@0.0.11",
+      "ngraph.merge": "npm:ngraph.merge@0.0.1",
+      "ngraph.random": "npm:ngraph.random@0.0.1",
+      "ngraph.tojson": "npm:ngraph.tojson@0.1.3",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "simplesvg": "npm:simplesvg@0.0.10"
     },
     "npm:vm-browserify@0.0.4": {
       "indexof": "npm:indexof@0.0.1"
