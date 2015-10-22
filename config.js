@@ -26,6 +26,7 @@ System.config({
     "cytoscape-qtip": "npm:cytoscape-qtip@2.2.5",
     "d3": "github:mbostock/d3@3.5.6",
     "dc": "npm:dc@2.1.0-dev",
+    "fetch": "github:github/fetch@0.10.0",
     "font-awesome": "npm:font-awesome@4.4.0",
     "jquery": "github:components/jquery@2.1.4",
     "leaflet": "github:Leaflet/Leaflet@0.7.5",

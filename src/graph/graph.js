@@ -7,6 +7,7 @@ const HIGHLIGHT_LINK_COLOR = 'blue';
 
 export class VivaGraph {
     nodeSize = DEFAULT_NODE_SIZE;
+    users = new Map();
 
     constructor(element) {
         this.graph = Viva.Graph.graph();
@@ -31,16 +32,16 @@ export class VivaGraph {
             svgGroupElem.append(svgText);
             svgGroupElem.append(img);
 
-            $(svgGroupElem).hover(function() { // mouse over
+            $(svgGroupElem).hover(function () { // mouse over
                 highlightRelatedNodes(node.id, true);
-            }, function() { // mouse out
+            }, function () { // mouse out
                 highlightRelatedNodes(node.id, false);
             });
             return svgGroupElem;
         };
 
         this.positionNode = function (nodeUI, pos) {
-            nodeUI.attr('transform', `translate(${pos.x - this.nodeSize / 2}, ${pos.y - this.nodeSize / 2})`);
+            nodeUI.attr('transform', `translate( ${pos.x - this.nodeSize / 2}, ${pos.y - this.nodeSize / 2})`);
         };
 
         this.renderLink = function (link) {
@@ -68,6 +69,26 @@ export class VivaGraph {
             layout: this.layout
         });
 
+    }
+
+    addData(data) {
+        for (let row of data) {
+            let user = new User(row);
+
+            this.users.set(user.id, user);
+
+            this.addNode(user.id, user);
+
+        }
+
+        for(let [userId, user] of this.users) {
+            let friends = user.avl_friends_ids;
+            for (let friendId of friends) {
+                if (this.users.has(friendId)) {
+                    this.addLink(userId, friendId);
+                }
+            }
+        }
     }
 
     addNode(node) {
@@ -109,15 +130,16 @@ export class VivaGraph {
     //}
 
 
-
     highlightRelatedNodes(nodeId, highlight) {
-        this.graph.forEachLinkedNode(nodeId, function(node, link){
+        this.graph.forEachLinkedNode(nodeId, function (node, link) {
             var linkUI = this.graphics.getLinkUI(link.id);
             if (linkUI) {
                 linkUI.attr('stroke', highlight ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR);
             }
         });
-    };
+    }
+
+;
 
     highlightNodes(nodesIds) {
         this.graph.beginUpdate();

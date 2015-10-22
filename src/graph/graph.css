@@ -1,0 +1,22 @@
+html, body, #graph {
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+
+#graph_control {
+    position: absolute;
+    float:right;
+    width: 17em;
+    height: 100%;
+    right: 0;
+    top: 0.5em;
+    margin: 0.5em;
+    font-size: 0.75em;
+    line-height: 1;
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);*/
+    background: gray;
+    box-sizing: border-box;
+    padding: 1em;
+    /*color: #fff;*/
+}
