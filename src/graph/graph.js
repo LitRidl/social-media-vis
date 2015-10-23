@@ -1,15 +1,17 @@
-import {Viva} from "vivagraphjs";
+import Viva from "vivagraphjs";
 import $ from "jquery";
+import {User} from "../model/user";
 
 const DEFAULT_NODE_SIZE = 24;
 const DEFAULT_LINK_COLOR = 'gray';
 const HIGHLIGHT_LINK_COLOR = 'blue';
 
 export class VivaGraph {
-    nodeSize = DEFAULT_NODE_SIZE;
-    users = new Map();
 
     constructor(element) {
+        this.nodeSize = DEFAULT_NODE_SIZE;
+        this.users = new Map();
+
         this.graph = Viva.Graph.graph();
 
         this.graphics = Viva.Graph.View.svgGraphics();
@@ -21,46 +23,12 @@ export class VivaGraph {
             gravity: -1
         });
 
-        this.renderNode = function (node) {
-            let svgGroupElem = Viva.Graph.svg('g');
-            let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.user.name); //todo remove dependency
-            let img = Viva.Graph.svg('image')
-                .attr('width', this.nodeSize)
-                .attr('height', this.nodeSize)
-                .link(node.data.user.profile_image_url); //todo remove dependency
 
-            svgGroupElem.append(svgText);
-            svgGroupElem.append(img);
+        this.graphics.node(this.renderNode);
+        //this.graphics.placeNode(this.positionNode);
 
-            $(svgGroupElem).hover(function () { // mouse over
-                highlightRelatedNodes(node.id, true);
-            }, function () { // mouse out
-                highlightRelatedNodes(node.id, false);
-            });
-            return svgGroupElem;
-        };
-
-        this.positionNode = function (nodeUI, pos) {
-            nodeUI.attr('transform', `translate( ${pos.x - this.nodeSize / 2}, ${pos.y - this.nodeSize / 2})`);
-        };
-
-        this.renderLink = function (link) {
-            return Viva.Graph.svg('path')
-                .attr('stroke', DEFAULT_LINK_COLOR);
-        };
-
-        this.positionLink = function (linkUI, fromPos, toPos) {
-            let pathSvgElem = 'M' + fromPos.x + ',' + fromPos.y +
-                'L' + toPos.x + ',' + toPos.y;
-
-            linkUI.attr("d", pathSvgElem);
-        };
-
-        this.graphics.node(this.renderNode());
-        this.graphics.placeNode(this.positionNode());
-
-        this.graphics.link(this.renderLink());
-        this.graphics.placeLink(this.positionLink());
+        this.graphics.link(this.renderLink);
+        //this.graphics.placeLink(this.positionLink);
 
 
         this.renderer = Viva.Graph.View.renderer(this.graph, {
@@ -71,28 +39,66 @@ export class VivaGraph {
 
     }
 
+    renderNode(node) {
+        let svgGroupElem = Viva.Graph.svg('g');
+        let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.name); //todo remove dependency
+        let img = Viva.Graph.svg('image')
+            .attr('width', node.data.nodeSize)
+            .attr('height', node.data.nodeSize)
+            .link(node.data.image_url); //todo remove dependency
+
+        svgGroupElem.append(svgText);
+        svgGroupElem.append(img);
+
+        //$(svgGroupElem).hover(function () { // mouse over
+        //    highlightRelatedNodes(node.id, true);
+        //}, function () { // mouse out
+        //    highlightRelatedNodes(node.id, false);
+        //});
+        return svgGroupElem;
+    };
+
+    positionNode(nodeUI, pos) {
+        nodeUI.attr('transform',
+            `translate( ${pos.x - nodeUI.node.data.nodeSize / 2}, ${pos.y - nodeUI.node.data.nodeSize / 2})`);
+    };
+
+    renderLink(link) {
+        return Viva.Graph.svg('path')
+            .attr('stroke', DEFAULT_LINK_COLOR);
+    };
+
+    positionLink(linkUI, fromPos, toPos) {
+        let pathSvgElem = 'M' + fromPos.x + ',' + fromPos.y +
+            'L' + toPos.x + ',' + toPos.y;
+
+        linkUI.attr("d", pathSvgElem);
+    };
+
+
     addData(data) {
         for (let row of data) {
-            let user = new User(row);
+            let node = new User(row);
 
-            this.users.set(user.id, user);
+            this.users.set(node.id, node);
 
-            this.addNode(user.id, user);
+            this.addNode(node.id, node);
 
         }
 
-        for(let [userId, user] of this.users) {
-            let friends = user.avl_friends_ids;
-            for (let friendId of friends) {
-                if (this.users.has(friendId)) {
-                    this.addLink(userId, friendId);
-                }
-            }
-        }
+        //for (let [userId, user] of this.users) {
+        //    let friends = user.avl_friends_ids;
+        //    for (let friendId of friends) {
+        //        if (this.users.has(friendId)) {
+        //            this.addLink(userId, friendId);
+        //        }
+        //    }
+        //}
     }
 
-    addNode(node) {
-        this.graph.addNode(node.id_str, node);
+    addNode(nodeId, node) {
+        node.nodeSize = this.nodeSize;
+        this.graph.addNode(nodeId, node);
     }
 
     removeNode(nodeId) {
@@ -106,7 +112,7 @@ export class VivaGraph {
     addNodes(nodes) {
         this.graph.beginUpdate();
         for (let node of nodes) {
-            this.addNode(node);
+            this.addNode(node.id, node);
         }
 
         this.graph.endUpdate();

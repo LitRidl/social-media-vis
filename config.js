@@ -26,8 +26,8 @@ System.config({
     "cytoscape-qtip": "npm:cytoscape-qtip@2.2.5",
     "d3": "github:mbostock/d3@3.5.6",
     "dc": "npm:dc@2.1.0-dev",
-    "fetch": "github:github/fetch@0.10.0",
     "font-awesome": "npm:font-awesome@4.4.0",
+    "github/fetch": "github:github/fetch@0.10.0",
     "jquery": "github:components/jquery@2.1.4",
     "leaflet": "github:Leaflet/Leaflet@0.7.5",
     "leaflet-hash": "npm:leaflet-hash@0.2.1",
@@ -37,6 +37,7 @@ System.config({
     "raphael": "github:DmitryBaranovskiy/raphael@2.1.4",
     "sugar": "npm:sugar@1.4.1",
     "vivagraphjs": "npm:vivagraphjs@0.8.1",
+    "whatwg-fetch": "npm:whatwg-fetch@0.10.0",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },

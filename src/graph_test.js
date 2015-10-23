@@ -1,19 +1,38 @@
-import fetch from "fetch";
-import {VivaGraph} from "graph/graph.js";
+//import fetch from "github/fetch";
+//import fetch from "whatwg-fetch";
+import {VivaGraph} from "./graph/graph.js";
 import $ from "jquery";
 
-const GET_DATA_URL = "/api/messages/all";
+//const GET_DATA_URL = "http://localhost:5000/api/messages/all";
+const GET_DATA_URL = "http://localhost:5000/api/users/all";
 
+let graph = new VivaGraph(document.getElementById("graph"));
 
-init();
+//init();
+
+promiseDOMready().then(init);
+
+function promiseDOMready() {
+    return new Promise(function(resolve) {
+        if (document.readyState === "complete") return resolve();
+        document.addEventListener("DOMContentLoaded", resolve);
+    });
+}
+
 
 function init() {
-    let graph = new VivaGraph($("#graph"));
 
     fetch(GET_DATA_URL)
-        .then(res => JSON.parse(res))
-        .then(data => graph.addData(data))
-        .then(() => graph.render())
-        .catch(err => console.log(`Error: ${err.message}`));
+        .then(res => res.json())
+        .then(res => res.result)
+        .then(data => drawData(data));
+        //.catch(err => console.log(`Error: ${err}`));
+}
+
+function drawData(data) {
+    console.log(data);
+    graph.addData(data);
+    graph.render();
+
 }
 
