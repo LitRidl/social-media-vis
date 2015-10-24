@@ -11,7 +11,12 @@ html, body {
     position: absolute;
     margin:0;
     padding:0;
-    background-color: black;
+    /*background-color: black;*/
+}
+
+#graph > svg {
+    width: 100%;
+    height: 100%;
 }
 
 svg {
@@ -20,7 +25,6 @@ svg {
     height: 100%;
     margin:0;
     padding:0;
-    background-color: red;
 }
 
 #graph_control {

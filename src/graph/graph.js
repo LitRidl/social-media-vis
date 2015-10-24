@@ -14,21 +14,22 @@ export class VivaGraph {
 
         this.graph = Viva.Graph.graph();
 
+        //this.graphics = Viva.Graph.View.svgGraphics();
         this.graphics = Viva.Graph.View.svgGraphics();
 
         this.layout = Viva.Graph.Layout.forceDirected(this.graph, {
-            springLength: 100,
-            springCoeff: 0.0001,
+            springLength: 80,
+            springCoeff: 0.0002,
             dragCoeff: 0.02,
-            gravity: -1
+            gravity: -1.2
         });
 
 
         this.graphics.node(this.renderNode);
-        //this.graphics.placeNode(this.positionNode);
+        this.graphics.placeNode(this.positionNode);
 
         this.graphics.link(this.renderLink);
-        //this.graphics.placeLink(this.positionLink);
+        this.graphics.placeLink(this.positionLink);
 
 
         this.renderer = Viva.Graph.View.renderer(this.graph, {
@@ -37,6 +38,7 @@ export class VivaGraph {
             layout: this.layout
         });
 
+        this.renderer.run(50);
     }
 
     renderNode(node) {
@@ -49,6 +51,16 @@ export class VivaGraph {
 
         svgGroupElem.append(svgText);
         svgGroupElem.append(img);
+
+        //let highlightRelatedNodes = (nodeId, highlight) => {
+        //    this.graph.forEachLinkedNode(nodeId, function (node, link) {
+        //        var linkUI = this.graphics.getLinkUI(link.id);
+        //        if (linkUI) {
+        //            linkUI.attr('stroke', highlight ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR);
+        //        }
+        //    });
+        //};
+
 
         //$(svgGroupElem).hover(function () { // mouse over
         //    highlightRelatedNodes(node.id, true);
@@ -77,6 +89,8 @@ export class VivaGraph {
 
 
     addData(data) {
+        this.graph.beginUpdate();
+
         for (let row of data) {
             let node = new User(row);
 
@@ -86,14 +100,18 @@ export class VivaGraph {
 
         }
 
-        //for (let [userId, user] of this.users) {
-        //    let friends = user.avl_friends_ids;
-        //    for (let friendId of friends) {
-        //        if (this.users.has(friendId)) {
-        //            this.addLink(userId, friendId);
-        //        }
-        //    }
-        //}
+
+        for (let [userId, user] of this.users) {
+            let friends = user.avl_friends_ids;
+            for (let friendId of friends) {
+                if (this.users.has(friendId)) {
+                    this.addLink(userId, friendId);
+                }
+            }
+        }
+
+        this.graph.endUpdate();
+
     }
 
     addNode(nodeId, node) {
@@ -123,7 +141,7 @@ export class VivaGraph {
     //}
 
     render() {
-        this.renderer.run();
+        this.renderer.rerender();
     }
 
     //highlightNode(nodeId) {
@@ -135,17 +153,6 @@ export class VivaGraph {
     //    ui.attr('fill', 'orange');
     //}
 
-
-    highlightRelatedNodes(nodeId, highlight) {
-        this.graph.forEachLinkedNode(nodeId, function (node, link) {
-            var linkUI = this.graphics.getLinkUI(link.id);
-            if (linkUI) {
-                linkUI.attr('stroke', highlight ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR);
-            }
-        });
-    }
-
-;
 
     highlightNodes(nodesIds) {
         this.graph.beginUpdate();
