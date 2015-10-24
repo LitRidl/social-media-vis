@@ -34,6 +34,7 @@
       "autolinker": "npm:autolinker@^0.18.1",
       "bootstrap": "github:twbs/bootstrap@^3.3.5",
       "bootstrap-daterangepicker": "npm:bootstrap-daterangepicker@^2.1.12",
+      "bootstrap-slider": "github:seiyria/bootstrap-slider@^5.2.4",
       "css": "github:systemjs/plugin-css@^0.1.18",
       "cytoscape": "github:cytoscape/cytoscape.js@^2.4.8",
       "cytoscape-cxtmenu": "npm:cytoscape-cxtmenu@^2.2.1",
@@ -50,6 +51,7 @@
       "qtip2": "npm:qtip2@^2.2.0",
       "raphael": "github:DmitryBaranovskiy/raphael@^2.1.4",
       "sugar": "npm:sugar@^1.4.1",
+      "underscore": "npm:underscore@^1.8.3",
       "vivagraphjs": "npm:vivagraphjs@^0.8.1",
       "whatwg-fetch": "npm:whatwg-fetch@^0.10.0"
     },

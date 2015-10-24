@@ -6,6 +6,40 @@ const DEFAULT_NODE_SIZE = 24;
 const DEFAULT_LINK_COLOR = 'gray';
 const HIGHLIGHT_LINK_COLOR = 'blue';
 
+export let sliders = [
+    {
+        label: 'springLength',
+        param: 'springLength',
+        min: 1,
+        max: 200
+    },
+    {
+        label: 'springCoeff',
+        param: 'springCoeff',
+        min: 0,
+        max: 0.001
+    },
+    {
+        label: 'dragCoeff',
+        param: 'dragCoeff',
+        min: 0,
+        max: 0.1
+    },
+    {
+        label: 'gravity',
+        param: 'gravity',
+        min: -20,
+        max: 20
+    }
+];
+
+let DEFAULT_LAYOUT_PARAMS = {
+    springLength: 80,
+    springCoeff: 0.0002,
+    dragCoeff: 0.02,
+    gravity: -1.2
+};
+
 export class VivaGraph {
 
     constructor(element) {
@@ -17,12 +51,8 @@ export class VivaGraph {
         //this.graphics = Viva.Graph.View.svgGraphics();
         this.graphics = Viva.Graph.View.svgGraphics();
 
-        this.layout = Viva.Graph.Layout.forceDirected(this.graph, {
-            springLength: 80,
-            springCoeff: 0.0002,
-            dragCoeff: 0.02,
-            gravity: -1.2
-        });
+        this.layoutParams = DEFAULT_LAYOUT_PARAMS;
+        this.layout = Viva.Graph.Layout.forceDirected(this.graph, this.layoutParams);
 
 
         this.graphics.node(this.renderNode);
@@ -68,24 +98,32 @@ export class VivaGraph {
         //    highlightRelatedNodes(node.id, false);
         //});
         return svgGroupElem;
-    };
+    }
+
+;
 
     positionNode(nodeUI, pos) {
         nodeUI.attr('transform',
             `translate( ${pos.x - nodeUI.node.data.nodeSize / 2}, ${pos.y - nodeUI.node.data.nodeSize / 2})`);
-    };
+    }
+
+;
 
     renderLink(link) {
         return Viva.Graph.svg('path')
             .attr('stroke', DEFAULT_LINK_COLOR);
-    };
+    }
+
+;
 
     positionLink(linkUI, fromPos, toPos) {
         let pathSvgElem = 'M' + fromPos.x + ',' + fromPos.y +
             'L' + toPos.x + ',' + toPos.y;
 
         linkUI.attr("d", pathSvgElem);
-    };
+    }
+
+;
 
 
     addData(data) {

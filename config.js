@@ -19,6 +19,7 @@ System.config({
     "babel-runtime": "npm:babel-runtime@5.8.25",
     "bootstrap": "github:twbs/bootstrap@3.3.5",
     "bootstrap-daterangepicker": "npm:bootstrap-daterangepicker@2.1.12",
+    "bootstrap-slider": "github:seiyria/bootstrap-slider@5.2.4",
     "core-js": "npm:core-js@1.2.1",
     "css": "github:systemjs/plugin-css@0.1.18",
     "cytoscape": "github:cytoscape/cytoscape.js@2.4.8",
@@ -36,6 +37,7 @@ System.config({
     "qtip2": "npm:qtip2@2.2.0",
     "raphael": "github:DmitryBaranovskiy/raphael@2.1.4",
     "sugar": "npm:sugar@1.4.1",
+    "underscore": "npm:underscore@1.8.3",
     "vivagraphjs": "npm:vivagraphjs@0.8.1",
     "whatwg-fetch": "npm:whatwg-fetch@0.10.0",
     "github:jspm/nodelibs-assert@0.1.0": {

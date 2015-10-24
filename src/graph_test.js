@@ -1,13 +1,22 @@
 //import fetch from "github/fetch";
 //import fetch from "whatwg-fetch";
-import {VivaGraph} from "./graph/graph.js";
+import {VivaGraph, sliders} from "./graph/graph.js";
 import $ from "jquery";
 import "./graph/graph.css!"
+import {LayoutControl} from "./layout_control.js"
+import {makeSlider} from "./sandbox.js"
+
 
 //const GET_DATA_URL = "http://localhost:5000/api/messages/all";
 const GET_DATA_URL = "http://localhost:5000/api/users/all";
 
 let graph = new VivaGraph(document.getElementById("graph"));
+let layoutControl = new LayoutControl(graph);
+
+if (sliders != null) {
+    sliders.forEach((slider) => makeSlider(slider, layoutControl));
+}
+
 
 init();
 
@@ -36,4 +45,5 @@ function drawData(data) {
     //graph.render();
 
 }
+
 
