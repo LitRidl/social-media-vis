@@ -6,8 +6,21 @@ export class UserWrapperNode extends ObjectWrapperNode {
         super(user, userId, name, imageUrl, links, info);
     }
 
-    static create(json) {
-        const user = new User(json);
+    setPlaceholder(placeholder) {
+        this.placeholder = true;
+    }
+
+    isPlaceholder() {
+        return this.placeholder;
+    }
+
+    static createFromJson(json) {
+        const user = User.createFromJson(json);
         return new UserWrapperNode(user, user.id, user.screen_name, user.image_url, user.avl_friends_ids, user.createHtml());
+    }
+
+    static createUserPlaceholder(id) {
+        const user = new User(id);
+        return new UserWrapperNode(user, user.id, user.id, 'images/no_image.png', [], 'Не загружен.');
     }
 }

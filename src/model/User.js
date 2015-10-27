@@ -1,7 +1,7 @@
 export class User {
-    constructor({id_str, name, screen_name, profile_image_url, description, location,
-        avl_original_dt, avl_friends_ids, friends_count, followers_count, statuses_count}) {
-        this.id = id_str;
+    constructor(id, name='', screen_name='', profile_image_url='', description='', location='',
+        avl_original_dt='1970-01-01', avl_friends_ids=[], friends_count=0, followers_count=0, statuses_count=0) {
+        this.id = id;
         this.name = name;
         this.screen_name = screen_name;
         this.image_url = profile_image_url;
@@ -9,7 +9,7 @@ export class User {
 
         this.location = location;
 
-        this.avl_original_dt = avl_original_dt[0];
+        this.avl_original_dt = avl_original_dt;
         this.avl_friends_ids = avl_friends_ids;
 
         this.friends_count = friends_count;
@@ -36,5 +36,11 @@ export class User {
         </div>
         </div>`;
         return res;
+    }
+
+    static createFromJson({id_str, name='', screen_name='', profile_image_url='', description='', location='',
+        avl_original_dt=['1970-01-01'], avl_friends_ids=[], friends_count=0, followers_count=0, statuses_count=0}) {
+        return new User(id_str, name, screen_name, profile_image_url, description, location,
+            avl_original_dt[0], avl_friends_ids, friends_count, followers_count, statuses_count)
     }
 }

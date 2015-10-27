@@ -49,8 +49,8 @@ function drawData(data) {
 
     const nodes = [];
 
-    for(let user of data) {
-        var userNode = UserWrapperNode.create(user);
+    for(let json of data) {
+        let userNode = UserWrapperNode.createFromJson(json);
         nodes.push(userNode);
     }
 

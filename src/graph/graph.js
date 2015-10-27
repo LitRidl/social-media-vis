@@ -1,6 +1,8 @@
 import Viva from "vivagraphjs";
 import $ from "jquery";
 
+import {UserWrapperNode} from "../model/UserWrapperNode";
+
 const MAX_LINKS_SIZE = 10000;
 const DEFAULT_NODE_SIZE = 24;
 const MIN_NODE_SIZE = 24;
@@ -38,7 +40,7 @@ export const sliders = [
 ];
 
 const DEFAULT_LAYOUT_PARAMS = {
-    springLength: 160,
+    springLength: 280,
     springCoeff: 0.0002,
     dragCoeff: 0.02,
     gravity: -1.2
@@ -89,6 +91,15 @@ export class VivaGraph {
 
     };
 
+    //highlightRelatedNodes = (nodeId, highlight) => {
+    //    graph.forEachLinkedNode(nodeId, function (node, link) {
+    //        var linkUI = graphics.getLinkUI(link.id);
+    //        if (linkUI) {
+    //            linkUI.attr('stroke', highlight ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR);
+    //        }
+    //    });
+    //};
+
     renderNode = (graph, graphics, layout, node) => {
         let svgGroupElem = Viva.Graph.svg('g');
         let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.getName());
@@ -123,13 +134,15 @@ export class VivaGraph {
             layout.pinNode(node, true);
         });
 
+        let expand = this.expandNode;
+        let collapse = this.collapseNode;
         svgGroupElem.addEventListener('dblclick', function () {
-            if (node.expanded != 'null') {
-                node.expanded = true;
-                this.expandNode(node);
-            } else {
+            if (node.expanded) {
                 node.expanded = false;
-                this.collapseNode(node);
+                collapse(node);
+            } else {
+                node.expanded = true;
+                expand(node);
             }
         });
         return svgGroupElem;
@@ -221,12 +234,62 @@ export class VivaGraph {
     }
 
     expandNode = (node) => {
+        //this.graph.beginUpdate();
 
-    }
+        let addedNodes = [];
+        let links = node.data.getLinks();
+        for (let linkNodeId of links) {
+            if (!this.nodes.has(linkNodeId)) {
+                let simpleUser = UserWrapperNode.createUserPlaceholder(linkNodeId); //todo fixme remove dependency
+                simpleUser.setPlaceholder(true);
+                simpleUser.getLinks().push(node.id);
+
+                this.addNode(linkNodeId, simpleUser);
+                this.nodes.set(linkNodeId, simpleUser);
+
+                addedNodes.push(linkNodeId);
+            }
+        }
+
+        for (let existingUserNode of this.nodes.values()) {
+            if (addedNodes.indexOf(existingUserNode.getId()) == -1) {
+                let earlierLinks = existingUserNode.getLinks();
+                let newLinks = earlierLinks.filter(x => addedNodes.indexOf(x) != -1);
+                for (let newNodeId of newLinks) {
+                    this.addLink(existingUserNode.getId(), newNodeId);
+                    let newNode = this.nodes.get(newNodeId);
+                    //if (existingUserNode.getId() != node.id) {
+                    //    newNode.getLinks().push(node.id);
+                    //}
+                }
+            }
+        }
+
+
+        //this.graph.endUpdate();
+    };
 
     collapseNode = (node) => {
+        //this.graph.beginUpdate();
 
-    }
+        let linkedNodes = node.data.getLinks();
+
+        for (let linkedNodeId of linkedNodes) {
+            let linkedNode = this.nodes.get(linkedNodeId);
+            if (linkedNode.isPlaceholder()) {
+                linkedNode.getLinks().pop(linkedNodeId);
+
+                if (linkedNode.getLinks().length == 0) {
+                    this.removeNode(linkedNodeId);
+                    this.nodes.delete(linkedNodeId);
+                }
+            }
+        }
+
+
+        //this.graph.endUpdate();
+
+    };
 
     //addLinks(links) {
     //
