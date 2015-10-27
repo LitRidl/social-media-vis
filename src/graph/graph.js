@@ -8,6 +8,8 @@ const MAX_NODE_SIZE = 96;
 const DEFAULT_LINK_COLOR = 'gray';
 const HIGHLIGHT_LINK_COLOR = 'blue';
 
+const $nodeInfo = $('#node_info');
+
 export const sliders = [
     {
         label: 'springLength',
@@ -82,15 +84,15 @@ export class VivaGraph {
         let nodeSize = MIN_NODE_SIZE + linksSize * (MAX_NODE_SIZE - MIN_NODE_SIZE)/MAX_LINKS_SIZE;
         return nodeSize;
 
-    }
+    };
 
     renderNode = (graph, graphics, layout, node) => {
         let svgGroupElem = Viva.Graph.svg('g');
-        let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.getName()); //todo remove dependency
+        let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.getName());
         let svgImgElem = Viva.Graph.svg('image')
             .attr('width', this.getNodeSize(node.data))
             .attr('height', this.getNodeSize(node.data))
-            .link(node.data.getImageUrl()); //todo remove dependency
+            .link(node.data.getImageUrl());
 
         svgGroupElem.append(svgText);
         svgGroupElem.append(svgImgElem);
@@ -107,6 +109,7 @@ export class VivaGraph {
 
         $(svgGroupElem).hover(function () { // mouse over
             highlightRelatedNodes(node.id, true);
+            $nodeInfo.html(node.data.getInfo());
         }, function () { // mouse out
             highlightRelatedNodes(node.id, false);
         });
@@ -116,17 +119,19 @@ export class VivaGraph {
             //layout.pinNode(node, !layout.isNodePinned(node));
             layout.pinNode(node, true);
         });
-        return svgGroupElem;
-    }
 
-;
+        svgGroupElem.addEventListener('dblclick', function () {
+            //$nodeInfo.html(node.data.getInfo());
+        });
+        return svgGroupElem;
+    };
 
     positionNode = (nodeUI, pos) => {
         const newX = (pos.x - this.getNodeSize(nodeUI.node.data) / 2);
         const newY = (pos.y - this.getNodeSize(nodeUI.node.data) / 2);
         nodeUI.attr('transform',
             `translate( ${newX}, ${newY})`);
-    }
+    };
 
 
     renderLink(link) {

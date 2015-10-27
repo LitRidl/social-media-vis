@@ -3,15 +3,16 @@ import "bootstrap-slider/dist/css/bootstrap-slider.css!";
 import slider from "bootstrap-slider";
 import _ from "underscore";
 
+const $sliders = $('#sliders');
+
 export function makeSlider(sliderParams, layoutControl) {
-    let $graphControl = $('#graph_control');
     let $input = $('<input></input>');
     let $param = $('<div class="param"></div>');
 
     $param.append('<span class="label label-default">' + sliderParams.label + '</span>');
     $param.append($input);
 
-    $graphControl.append($param);
+    $sliders.append($param);
 
     let p = $input.slider({
         min: sliderParams.min,
