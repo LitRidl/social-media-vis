@@ -55,7 +55,7 @@ export class VivaGraph {
         this.layout = Viva.Graph.Layout.forceDirected(this.graph, this.layoutParams);
 
 
-        this.graphics.node(this.renderNode);
+        this.graphics.node(this.renderNode.bind(this, this.graph, this.graphics, this.layout));
         this.graphics.placeNode(this.positionNode);
 
         this.graphics.link(this.renderLink);
@@ -71,32 +71,38 @@ export class VivaGraph {
         this.renderer.run(50);
     }
 
-    renderNode(node) {
+   renderNode(graph, graphics, layout, node) {
         let svgGroupElem = Viva.Graph.svg('g');
         let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.name); //todo remove dependency
-        let img = Viva.Graph.svg('image')
+        let svgImgElem = Viva.Graph.svg('image')
             .attr('width', node.data.nodeSize)
             .attr('height', node.data.nodeSize)
             .link(node.data.image_url); //todo remove dependency
 
         svgGroupElem.append(svgText);
-        svgGroupElem.append(img);
+        svgGroupElem.append(svgImgElem);
 
-        //let highlightRelatedNodes = (nodeId, highlight) => {
-        //    this.graph.forEachLinkedNode(nodeId, function (node, link) {
-        //        var linkUI = this.graphics.getLinkUI(link.id);
-        //        if (linkUI) {
-        //            linkUI.attr('stroke', highlight ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR);
-        //        }
-        //    });
-        //};
+        let highlightRelatedNodes = function (nodeId, highlight) {
+            graph.forEachLinkedNode(nodeId, function (node, link) {
+                var linkUI = graphics.getLinkUI(link.id);
+                if (linkUI) {
+                    linkUI.attr('stroke', highlight ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR);
+                }
+            });
+        };
 
 
-        //$(svgGroupElem).hover(function () { // mouse over
-        //    highlightRelatedNodes(node.id, true);
-        //}, function () { // mouse out
-        //    highlightRelatedNodes(node.id, false);
-        //});
+        $(svgGroupElem).hover(function () { // mouse over
+            highlightRelatedNodes(node.id, true);
+        }, function () { // mouse out
+            highlightRelatedNodes(node.id, false);
+        });
+
+        svgGroupElem.addEventListener('click', function () {
+            // toggle pinned mode
+            //layout.pinNode(node, !layout.isNodePinned(node));
+            layout.pinNode(node, true);
+        });
         return svgGroupElem;
     }
 
