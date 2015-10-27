@@ -1,10 +1,10 @@
 //import fetch from "github/fetch";
 //import fetch from "whatwg-fetch";
-import {VivaGraph, sliders} from "./graph/graph.js";
+import {VivaGraph, sliders} from "./graph/graph";
 import $ from "jquery";
 import "./graph/graph.css!"
-import {LayoutControl} from "./layout_control.js"
-import {makeSlider} from "./sandbox.js"
+import {LayoutControl} from "./layout_control"
+import {makeSlider} from "./sandbox"
 
 
 //const GET_DATA_URL = "http://localhost:5000/api/messages/all";

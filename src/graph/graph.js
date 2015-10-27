@@ -6,7 +6,7 @@ const DEFAULT_NODE_SIZE = 24;
 const DEFAULT_LINK_COLOR = 'gray';
 const HIGHLIGHT_LINK_COLOR = 'blue';
 
-export let sliders = [
+export const sliders = [
     {
         label: 'springLength',
         param: 'springLength',
@@ -33,7 +33,7 @@ export let sliders = [
     }
 ];
 
-let DEFAULT_LAYOUT_PARAMS = {
+const DEFAULT_LAYOUT_PARAMS = {
     springLength: 80,
     springCoeff: 0.0002,
     dragCoeff: 0.02,
@@ -103,28 +103,23 @@ export class VivaGraph {
 ;
 
     positionNode(nodeUI, pos) {
+        const newX = (pos.x - nodeUI.node.data.nodeSize / 2);
+        const newY = (pos.y - nodeUI.node.data.nodeSize / 2);
         nodeUI.attr('transform',
-            `translate( ${pos.x - nodeUI.node.data.nodeSize / 2}, ${pos.y - nodeUI.node.data.nodeSize / 2})`);
+            `translate( ${newX}, ${newY})`);
     }
 
-;
 
     renderLink(link) {
         return Viva.Graph.svg('path')
             .attr('stroke', DEFAULT_LINK_COLOR);
     }
 
-;
-
     positionLink(linkUI, fromPos, toPos) {
-        let pathSvgElem = 'M' + fromPos.x + ',' + fromPos.y +
-            'L' + toPos.x + ',' + toPos.y;
+        let pathSvgElem = `M${fromPos.x},${fromPos.y}L${toPos.x},${toPos.y}`;
 
         linkUI.attr("d", pathSvgElem);
     }
-
-;
-
 
     addData(data) {
         this.graph.beginUpdate();
@@ -221,7 +216,7 @@ export class VivaGraph {
 
     center(nodeId) {
         if (this.graph.getNode(nodeId)) {
-            var pos = this.layout.getNodePosition(nodeId);
+            const pos = this.layout.getNodePosition(nodeId);
             this.renderer.moveTo(pos.x, pos.y);
 
             this.highlightRelatedNodes(nodeId);

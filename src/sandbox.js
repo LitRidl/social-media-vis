@@ -13,7 +13,7 @@ export function makeSlider(sliderParams, layoutControl) {
 
     $graphControl.append($param);
 
-    var p = $input.slider({
+    let p = $input.slider({
         min: sliderParams.min,
         max: sliderParams.max,
         step: (sliderParams.max - sliderParams.min)/10,
