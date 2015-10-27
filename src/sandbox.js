@@ -31,3 +31,17 @@ export function makeSlider(sliderParams, layoutControl) {
 export function removeSliders() {
     $(".param").remove();
 }
+
+export function initGraphControlButtons(graphControl) {
+    const $zoomInBtn = $("#btn_graph_zoom_in");
+    $zoomInBtn.on("click", graphControl.zoomIn);
+
+    const $zoomOutBtn = $("#btn_graph_zoom_out");
+    $zoomOutBtn.on("click", graphControl.zoomOut);
+
+    const $centerBtn = $("#btn_graph_center");
+    $centerBtn.on("click", graphControl.reset);
+
+    const $pauseBtn = $("#btn_graph_pause");
+    $pauseBtn.on("click", graphControl.pause);
+}

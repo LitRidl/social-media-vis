@@ -47,6 +47,7 @@ const DEFAULT_LAYOUT_PARAMS = {
 export class VivaGraph {
 
     constructor(element) {
+        this.paused = false;
         this.nodes = new Map();
 
         this.graph = Viva.Graph.graph();
@@ -123,7 +124,13 @@ export class VivaGraph {
         });
 
         svgGroupElem.addEventListener('dblclick', function () {
-            //$nodeInfo.html(node.data.getInfo());
+            if (node.expanded != 'null') {
+                node.expanded = true;
+                this.expandNode(node);
+            } else {
+                node.expanded = false;
+                this.collapseNode(node);
+            }
         });
         return svgGroupElem;
     };
@@ -213,6 +220,14 @@ export class VivaGraph {
         this.graph.endUpdate();
     }
 
+    expandNode = (node) => {
+
+    }
+
+    collapseNode = (node) => {
+
+    }
+
     //addLinks(links) {
     //
     //}
@@ -251,11 +266,13 @@ export class VivaGraph {
     }
 
     renderPause() {
-        this.renderer.pause();
-    }
-
-    renderResume() {
-        this.renderer.resume();
+        if (!this.paused) {
+            this.paused = true;
+            this.renderer.pause();
+        } else {
+            this.paused = false;
+            this.renderer.resume();
+        }
     }
 
     center(nodeId) {

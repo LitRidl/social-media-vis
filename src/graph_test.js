@@ -3,8 +3,8 @@
 import {VivaGraph, sliders} from "./graph/graph";
 import $ from "jquery";
 import "./graph/graph.css!"
-import {LayoutControl} from "./layout_control"
-import {makeSlider} from "./sandbox"
+import {GraphControl} from "./graph_control"
+import {makeSlider, initGraphControlButtons} from "./sandbox"
 import {UserWrapperNode} from "./model/UserWrapperNode";
 
 
@@ -13,11 +13,14 @@ import {UserWrapperNode} from "./model/UserWrapperNode";
 const GET_DATA_URL = "http://localhost:5000/api/users/all";
 
 let graph = new VivaGraph(document.getElementById("graph"));
-let layoutControl = new LayoutControl(graph);
+let graphControl = new GraphControl(graph);
 
 if (sliders != null) {
-    sliders.forEach((slider) => makeSlider(slider, layoutControl));
+    sliders.forEach((slider) => makeSlider(slider, graphControl));
 }
+
+initGraphControlButtons(graphControl);
+
 
 
 init();
