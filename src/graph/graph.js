@@ -57,6 +57,8 @@ export class VivaGraph {
         this.layoutParams = DEFAULT_LAYOUT_PARAMS;
         this.layout = Viva.Graph.Layout.forceDirected(this.graph, this.layoutParams);
 
+        this.createArrowHead();
+
 
         this.graphics.node(this.renderNode.bind(this, this.graph, this.graphics, this.layout));
         this.graphics.placeNode(this.positionNode);
@@ -81,7 +83,7 @@ export class VivaGraph {
             linksSize = MAX_LINKS_SIZE;
         }
 
-        let nodeSize = MIN_NODE_SIZE + linksSize * (MAX_NODE_SIZE - MIN_NODE_SIZE)/MAX_LINKS_SIZE;
+        let nodeSize = MIN_NODE_SIZE + linksSize * (MAX_NODE_SIZE - MIN_NODE_SIZE) / MAX_LINKS_SIZE;
         return nodeSize;
 
     };
@@ -136,11 +138,43 @@ export class VivaGraph {
 
     renderLink(link) {
         return Viva.Graph.svg('path')
-            .attr('stroke', DEFAULT_LINK_COLOR);
+            .attr('stroke', DEFAULT_LINK_COLOR)
+            .attr('marker-end', 'url(#Triangle)');
+
     }
 
     positionLink(linkUI, fromPos, toPos) {
-        let pathSvgElem = `M${fromPos.x},${fromPos.y}L${toPos.x},${toPos.y}`;
+
+        let geom = Viva.Graph.geom();
+        // Here we should take care about
+        //  "Links should start/stop at node's bounding box, not at the node center."
+
+        // For rectangular nodes Viva.Graph.geom() provides efficient way to find
+        // an intersection point between segment and rectangle
+        let toNodeSize = MIN_NODE_SIZE;
+        let fromNodeSize = MIN_NODE_SIZE;
+
+        let from = geom.intersectRect(
+                // rectangle:
+                fromPos.x - fromNodeSize / 2, // left
+                fromPos.y - fromNodeSize / 2, // top
+                fromPos.x + fromNodeSize / 2, // right
+                fromPos.y + fromNodeSize / 2, // bottom
+                // segment:
+                fromPos.x, fromPos.y, toPos.x, toPos.y)
+            || fromPos; // if no intersection found - return center of the node
+
+        let to = geom.intersectRect(
+                // rectangle:
+                toPos.x - toNodeSize / 2, // left
+                toPos.y - toNodeSize / 2, // top
+                toPos.x + toNodeSize / 2, // right
+                toPos.y + toNodeSize / 2, // bottom
+                // segment:
+                toPos.x, toPos.y, fromPos.x, fromPos.y)
+            || toPos; // if no intersection found - return center of the node
+
+        let pathSvgElem = `M${from.x},${from.y}L${to.x},${to.y}`;
 
         linkUI.attr("d", pathSvgElem);
     }
@@ -239,5 +273,22 @@ export class VivaGraph {
 
     }
 
+    createArrowHead() {
+        let marker = Viva.Graph.svg('marker')
+            .attr('id', 'Triangle')
+            .attr('viewBox', "0 0 10 10")
+            .attr('refX', "10")
+            .attr('refY', "5")
+            .attr('markerUnits', "strokeWidth")
+            .attr('markerWidth', "10")
+            .attr('markerHeight', "5")
+            .attr('orient', "auto");
+
+        marker.append('path').attr('d', 'M 0 0 L 10 5 L 0 10 z');
+
+        // Marker should be defined only once in <defs> child element of root <svg> element:
+        var defs = this.graphics.getSvgRoot().append('defs');
+        defs.append(marker);
+    }
 
 }
