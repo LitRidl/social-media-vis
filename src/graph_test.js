@@ -5,6 +5,8 @@ import $ from "jquery";
 import "./graph/graph.css!"
 import {LayoutControl} from "./layout_control"
 import {makeSlider} from "./sandbox"
+import {UserWrapperNode} from "./model/UserWrapperNode";
+
 
 
 //const GET_DATA_URL = "http://localhost:5000/api/messages/all";
@@ -41,7 +43,15 @@ function init() {
 
 function drawData(data) {
     console.log(data);
-    graph.addData(data);
+
+    const nodes = [];
+
+    for(let user of data) {
+        var userNode = UserWrapperNode.create(user);
+        nodes.push(userNode);
+    }
+
+    graph.addNodes(nodes);
     //graph.render();
 
 }

@@ -1,6 +1,5 @@
 import Viva from "vivagraphjs";
 import $ from "jquery";
-import {User} from "../model/user";
 
 const DEFAULT_NODE_SIZE = 24;
 const DEFAULT_LINK_COLOR = 'gray';
@@ -34,7 +33,7 @@ export const sliders = [
 ];
 
 const DEFAULT_LAYOUT_PARAMS = {
-    springLength: 80,
+    springLength: 160,
     springCoeff: 0.0002,
     dragCoeff: 0.02,
     gravity: -1.2
@@ -44,7 +43,7 @@ export class VivaGraph {
 
     constructor(element) {
         this.nodeSize = DEFAULT_NODE_SIZE;
-        this.users = new Map();
+        this.nodes = new Map();
 
         this.graph = Viva.Graph.graph();
 
@@ -73,11 +72,11 @@ export class VivaGraph {
 
    renderNode(graph, graphics, layout, node) {
         let svgGroupElem = Viva.Graph.svg('g');
-        let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.name); //todo remove dependency
+        let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.getName()); //todo remove dependency
         let svgImgElem = Viva.Graph.svg('image')
             .attr('width', node.data.nodeSize)
             .attr('height', node.data.nodeSize)
-            .link(node.data.image_url); //todo remove dependency
+            .link(node.data.getImageUrl()); //todo remove dependency
 
         svgGroupElem.append(svgText);
         svgGroupElem.append(svgImgElem);
@@ -127,32 +126,6 @@ export class VivaGraph {
         linkUI.attr("d", pathSvgElem);
     }
 
-    addData(data) {
-        this.graph.beginUpdate();
-
-        for (let row of data) {
-            let node = new User(row);
-
-            this.users.set(node.id, node);
-
-            this.addNode(node.id, node);
-
-        }
-
-
-        for (let [userId, user] of this.users) {
-            let friends = user.avl_friends_ids;
-            for (let friendId of friends) {
-                if (this.users.has(friendId)) {
-                    this.addLink(userId, friendId);
-                }
-            }
-        }
-
-        this.graph.endUpdate();
-
-    }
-
     addNode(nodeId, node) {
         node.nodeSize = this.nodeSize;
         this.graph.addNode(nodeId, node);
@@ -166,10 +139,23 @@ export class VivaGraph {
         this.graph.addLink(nodeId1, nodeId2);
     }
 
-    addNodes(nodes) {
+    addNodes(newNodes) {
         this.graph.beginUpdate();
-        for (let node of nodes) {
-            this.addNode(node.id, node);
+
+        for (let node of newNodes) {
+            this.nodes.set(node.getId(), node);
+
+            this.addNode(node.getId(), node);
+
+        }
+
+        for (let [nodeId, node] of this.nodes) {
+            let links = node.getLinks();
+            for (let linkNodeId of links) {
+                if (this.nodes.has(linkNodeId)) {
+                    this.addLink(nodeId, linkNodeId);
+                }
+            }
         }
 
         this.graph.endUpdate();
