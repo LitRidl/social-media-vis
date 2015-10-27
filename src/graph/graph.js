@@ -6,7 +6,7 @@ import {UserWrapperNode} from "../model/UserWrapperNode";
 const MAX_LINKS_SIZE = 10000;
 const DEFAULT_NODE_SIZE = 24;
 const MIN_NODE_SIZE = 24;
-const MAX_NODE_SIZE = 96;
+const MAX_NODE_SIZE = 48;
 const DEFAULT_LINK_COLOR = 'gray';
 const HIGHLIGHT_LINK_COLOR = 'blue';
 
@@ -81,7 +81,8 @@ export class VivaGraph {
     }
 
     getNodeSize = (objetWrapper) => {
-        let linksSize = objetWrapper.getLinks().length;
+        //let linksSize = objetWrapper.getLinks().length;
+        let linksSize = objetWrapper.getSizeMeasure();
         if (linksSize > MAX_LINKS_SIZE) {
             linksSize = MAX_LINKS_SIZE;
         }
@@ -288,6 +289,10 @@ export class VivaGraph {
 
 
         //this.graph.endUpdate();
+
+    };
+
+    deleteNode = (node) => {  //todo fixme low-level removeNode already exists
 
     };
 

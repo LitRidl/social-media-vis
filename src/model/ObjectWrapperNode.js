@@ -24,6 +24,10 @@ export class ObjectWrapperNode {
         return this.links;
     }
 
+    getSizeMeasure() {
+        return this.originalObject.followers_count;
+    }
+
     getInfo() {
         return this.info;
     }
