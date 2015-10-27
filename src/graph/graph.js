@@ -10,7 +10,7 @@ export const sliders = [
         label: 'springLength',
         param: 'springLength',
         min: 1,
-        max: 200
+        max: 400
     },
     {
         label: 'springCoeff',
