@@ -31,7 +31,7 @@ export class GraphControl {
 
     reset = () => {
         this.graph.reset();
-    }
+    };
 
     update() {
 
