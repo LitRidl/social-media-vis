@@ -1,8 +1,7 @@
 export class GraphControl {
     constructor(graph) {
         this.graph = graph;
-        this.layout = graph.layout;
-        this.layoutParams = graph.layoutParams;
+        this.layoutParams = graph.layout.getSettings();
     }
 
     getLayoutParam(layoutParam) {

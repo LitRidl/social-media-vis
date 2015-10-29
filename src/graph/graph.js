@@ -2,6 +2,8 @@ import Viva from "vivagraphjs";
 import $ from "jquery";
 
 import {UserWrapperNode} from "../model/UserWrapperNode";
+import {ForceLayout} from "./layouts/ForceLayout";
+import {ConstantLayout} from "./layouts/ConstantLayout";
 
 const MAX_LINKS_SIZE = 10000;
 const DEFAULT_NODE_SIZE = 24;
@@ -39,13 +41,6 @@ export const sliders = [
     }
 ];
 
-const DEFAULT_LAYOUT_PARAMS = {
-    springLength: 280,
-    springCoeff: 0.0002,
-    dragCoeff: 0.02,
-    gravity: -1.2
-};
-
 export class VivaGraph {
 
     constructor(element) {
@@ -57,13 +52,14 @@ export class VivaGraph {
         //this.graphics = Viva.Graph.View.svgGraphics();
         this.graphics = Viva.Graph.View.svgGraphics();
 
-        this.layoutParams = DEFAULT_LAYOUT_PARAMS;
-        this.layout = Viva.Graph.Layout.forceDirected(this.graph, this.layoutParams);
+        //this.layout = new ForceLayout(this.graph);
+        this.layout = new ConstantLayout(this.graph);
+
 
         this.createArrowHead();
 
 
-        this.graphics.node(this.renderNode.bind(this, this.graph, this.graphics, this.layout));
+        this.graphics.node(this.renderNode.bind(this, this.graph, this.graphics, this.layout.getLayout()));
         this.graphics.placeNode(this.positionNode);
 
         this.graphics.link(this.renderLink);
@@ -73,10 +69,10 @@ export class VivaGraph {
         this.renderer = Viva.Graph.View.renderer(this.graph, {
             graphics: this.graphics,
             container: element,
-            layout: this.layout
+            layout: this.layout.getLayout(),
         });
 
-        this.renderer.run(50);
+        this.renderer.run(50); //todo fixme?
 
     }
 
@@ -124,7 +120,7 @@ export class VivaGraph {
 
         $(svgGroupElem).hover(function () { // mouse over
             highlightRelatedNodes(node.id, true);
-            $nodeInfo.html(node.data.getInfo());
+            $nodeInfo.html(node.data.getInfo()); //todo to sandbox
         }, function () { // mouse out
             highlightRelatedNodes(node.id, false);
         });
@@ -138,6 +134,8 @@ export class VivaGraph {
         let expand = this.expandNode;
         let collapse = this.collapseNode;
         svgGroupElem.addEventListener('dblclick', function () {
+            alert(`node pinned: ${layout.isNodePinned(node.id)}`);
+
             if (node.expanded) {
                 node.expanded = false;
                 collapse(node);
@@ -201,6 +199,7 @@ export class VivaGraph {
     }
 
     addNode(nodeId, node) {
+        //node.isPinned = false;
         this.graph.addNode(nodeId, node);
     }
 
@@ -215,6 +214,7 @@ export class VivaGraph {
     addNodes(newNodes) {
         this.graph.beginUpdate();
 
+        this.layout.updateNodesPostitions(newNodes);
         for (let node of newNodes) {
             this.nodes.set(node.getId(), node);
 
@@ -345,7 +345,7 @@ export class VivaGraph {
 
     center(nodeId) {
         if (this.graph.getNode(nodeId)) {
-            const pos = this.layout.getNodePosition(nodeId);
+            const pos = this.layout.getLayout().getNodePosition(nodeId);
             this.renderer.moveTo(pos.x, pos.y);
 
             this.highlightRelatedNodes(nodeId);
