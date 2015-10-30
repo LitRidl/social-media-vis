@@ -45,14 +45,42 @@ const sliders = [
 
 export class ForceLayout {
     constructor(graph, layoutSettings=DEFAULT_LAYOUT_PARAMS) {
+        this.graph = graph;
         this.settings = layoutSettings;
         this.layout = Viva.Graph.Layout.forceDirected(graph, layoutSettings);
         //this.layout.placeNode(this.getNodePosition);
     }
 
-    updateNodesPostitions(nodes) {
-        return nodes;
+    updateNodesPostitions() {
+        let size = this.graph.getNodesCount();
+        console.log(`size: ${size}`);
+
+        const anglePerNode = 2 * Math.PI / size;
+
+        let nodes = [];
+        this.graph.forEachNode(function(node) {
+            nodes.push(node);
+        } );
+
+        let radius = size * 20 / Math.PI;
+        console.log(`Radius: ${radius}`);
+
+        for(let [index, node] of nodes.entries()) {
+            let newPos = this._calculateNodePosition(index, anglePerNode, radius);
+            this.layout.setNodePosition(node.id, newPos.x, newPos.y);
+        }
+
     }
+
+    _calculateNodePosition(index, anglePerNode, radius) {
+        // radius = calculateRadius() //todo fixme by points number?
+        const currentAngle = index * anglePerNode;
+        const newX = radius * Math.cos(currentAngle); //todo check
+        const newY = radius * Math.sin(currentAngle); //todo check
+
+        return {x: newX, y: newY};
+    }
+
 
     //getNodePosition(node) {
     //    return DEFAULT_POSITION;

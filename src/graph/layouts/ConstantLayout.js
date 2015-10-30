@@ -72,15 +72,18 @@ export class ConstantLayout extends VivaConstantLayout {
 
     };
 
-    updateNodesPostitions(nodes) { // just Node
-        let newRadius = nodes.length * 20 / Math.PI;
+    updateNodesPostitions() { // just Node
+        let size = this.layoutNodes.length;
+
+        let newRadius = size * 20 / Math.PI;
         this._setRadius(newRadius);
-        const anglePerNode = 2 * Math.PI / nodes.length;
-        for(let [index, node] of nodes.entries()) {
-            node.pos = this._calculateNodePosition(index, anglePerNode);
+
+        const anglePerNode = 2 * Math.PI / size;
+        for(let [index, node] of this.layoutNodes.entries()) {
+            let newPos = this._calculateNodePosition(index, anglePerNode);
+            this.setNodePosition(node.id, newPos.x, newPos.y);
         }
 
-        return nodes;
     }
 
     getLayout() {

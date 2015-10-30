@@ -51,11 +51,10 @@ export class VivaGraph {
 
         this.graph = Viva.Graph.graph();
 
-        //this.graphics = Viva.Graph.View.svgGraphics();
         this.graphics = Viva.Graph.View.svgGraphics();
 
-        //this.layout = new ForceLayout(this.graph);
-        this.layout = new ConstantLayout(this.graph);
+        this.layout = new ForceLayout(this.graph);
+        //this.layout = new ConstantLayout(this.graph);
 
 
         this.createArrowHead();
@@ -201,8 +200,9 @@ export class VivaGraph {
     }
 
     addNode(nodeId, node) {
+        node.isPinned = true;
         var nodeUI = this.graph.addNode(nodeId, node);
-        nodeUI.pinned = false;
+        //nodeUI.pinned = false;
         return nodeUI;
     }
 
@@ -217,7 +217,6 @@ export class VivaGraph {
     addNodes(newNodes) {
         this.graph.beginUpdate();
 
-        this.layout.updateNodesPostitions(newNodes);
         for (let node of newNodes) {
             //node.pinned = false;
             this.nodes.set(node.getId(), node);
@@ -225,6 +224,8 @@ export class VivaGraph {
             this.addNode(node.getId(), node);
 
         }
+        this.layout.updateNodesPostitions();
+
 
         for (let [nodeId, node] of this.nodes) {
             let links = node.getLinks();
