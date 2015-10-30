@@ -7,6 +7,10 @@ import {UserWrapperNode} from "../model/UserWrapperNode";
 import {ForceLayout} from "./layouts/ForceLayout";
 import {ConstantLayout} from "./layouts/ConstantLayout";
 
+import {Rect} from "../utils/Rect";
+
+import * as sandbox from "../sandbox"
+
 const MAX_LINKS_SIZE = 10000;
 const DEFAULT_NODE_SIZE = 24;
 const MIN_NODE_SIZE = 24;
@@ -14,7 +18,6 @@ const MAX_NODE_SIZE = 48;
 const DEFAULT_LINK_COLOR = 'gray';
 const HIGHLIGHT_LINK_COLOR = 'blue';
 
-const $nodeInfo = $('#node_info');
 
 export const sliders = [
     {
@@ -121,7 +124,7 @@ export class VivaGraph {
 
         $(svgGroupElem).hover(function () { // mouse over
             highlightRelatedNodes(node.id, true);
-            $nodeInfo.html(node.data.getInfo()); //todo to sandbox
+            sandbox.showNodeInfo(node.data.getInfo()); //todo to sandbox
         }, function () { // mouse out
             highlightRelatedNodes(node.id, false);
         });
@@ -214,19 +217,29 @@ export class VivaGraph {
         this.graph.addLink(nodeId1, nodeId2);
     }
 
+
     addNodes(newNodes) {
         this.graph.beginUpdate();
 
+
+        let graphRect = new Rect({});
         for (let node of newNodes) {
             //node.pinned = false;
             this.nodes.set(node.getId(), node);
 
             node.isPinned = true; //TODO fixme pin nodes only for layout
-            this.addNode(node.getId(), node);
+            let nodeUI = this.addNode(node.getId(), node);
 
+            graphRect.update(this.layout.getLayout().getNodePosition(nodeUI.id));
+            //console.log(`${this.layout.getLayout().getNodePosition(nodeUI.id)}`);
         }
         this.layout.updateNodesPostitions();
-
+        let center = graphRect.calculateCenter();
+        this.renderer.moveTo(center.x, center.y);
+        let zoomOutCount = newNodes.length / 16;
+        for(let i=0; i< zoomOutCount; ++i) {
+            this.zoomOut();
+        }
 
         for (let [nodeId, node] of this.nodes) {
             let links = node.getLinks();

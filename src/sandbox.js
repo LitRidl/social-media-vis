@@ -7,6 +7,12 @@ import _ from "underscore";
 
 const $sliders = $('#sliders');
 
+const $nodeInfo = $('#node_info');
+
+export function showNodeInfo(html) {
+    $nodeInfo.html(html);
+}
+
 export function makeSlider(sliderParams, layoutControl) {
     let $input = $('<input></input>');
     let $param = $('<div class="param"></div>');
