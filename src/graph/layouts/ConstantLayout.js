@@ -1,3 +1,5 @@
+'use strict';
+
 import Viva from "vivagraphjs";
 import {VivaConstantLayout} from "./VivaConstantLayout";
 
@@ -39,7 +41,11 @@ export class ConstantLayout extends VivaConstantLayout {
         return this.settings.radius;
     }
 
-    placeNode(node) {
+    _setRadius(radius) {
+        return this.settings.radius = radius;
+    }
+
+    placeNodeCallback(node) {
         let newX = node.data.pos.x - this.getNodeSize(node.data) / 2;
         let newY = node.data.pos.y - this.getNodeSize(node.data) / 2;
         return {x: newX, y: newY};
@@ -67,6 +73,8 @@ export class ConstantLayout extends VivaConstantLayout {
     };
 
     updateNodesPostitions(nodes) { // just Node
+        let newRadius = nodes.length * 20 / Math.PI;
+        this._setRadius(newRadius);
         const anglePerNode = 2 * Math.PI / nodes.length;
         for(let [index, node] of nodes.entries()) {
             node.pos = this._calculateNodePosition(index, anglePerNode);

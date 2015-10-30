@@ -1,3 +1,5 @@
+'use strict';
+
 import $ from "jquery";
 import "bootstrap-slider/dist/css/bootstrap-slider.css!";
 import slider from "bootstrap-slider";

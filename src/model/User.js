@@ -23,6 +23,7 @@ export class User {
         <div class="item">
         <div class="tweet-wrapper">
         <img class="avatar-img" src="${this.image_url}" height="200px">
+        <div class="user">Идентификатор: ${this.id}</div>
         <div class="user">Имя: ${this.name}</div>
         <div class="user">Ник: ${this.screen_name}</div>
         <div>Место: ${this.location}</div>

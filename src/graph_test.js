@@ -1,5 +1,6 @@
-//import fetch from "github/fetch";
 //import fetch from "whatwg-fetch";
+
+
 import {VivaGraph, sliders} from "./graph/graph";
 import $ from "jquery";
 import "./graph/graph.css!"

@@ -1,3 +1,5 @@
+'use strict';
+
 export class GraphControl {
     constructor(graph) {
         this.graph = graph;

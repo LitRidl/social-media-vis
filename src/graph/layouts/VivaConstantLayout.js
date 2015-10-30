@@ -1,4 +1,4 @@
-
+'use strict';
 
 class Rect {
     constructor ({x1=Number.MAX_VALUE, y1=Number.MAX_VALUE, x2=Number.MIN_VALUE, y2=Number.MIN_VALUE}) {

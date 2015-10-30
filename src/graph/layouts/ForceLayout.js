@@ -1,3 +1,5 @@
+'use strict';
+
 import Viva from "vivagraphjs";
 
 const DEFAULT_LAYOUT_PARAMS = {
