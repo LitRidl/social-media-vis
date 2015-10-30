@@ -9,11 +9,27 @@ const $sliders = $('#sliders');
 
 const $nodeInfo = $('#node_info');
 
-export function showNodeInfo(html) {
+export const deleteNodeEvent = 'deleteNode';
+
+
+export function showNodeInfo(html, nodeId) {
     let $nodeButtons = $nodeInfo.html('<div class="btn-toolbar" role="group"></div>');
-    $nodeButtons.append('<button id="btn_node_update" type="button" class="btn btn-small disabled">Обновить</button>');
-    $nodeButtons.append('<button id="btn_node_delete" type="button" class="btn btn-small">Удалить</button>');
+    let $updateNodeButton = $nodeButtons.append('<button id="btn_node_update" type="button" class="btn btn-small disabled">Обновить</button>');
+    let $deleteNodeButton = $nodeButtons.append('<button id="btn_node_delete" type="button" class="btn btn-small">Удалить</button>');
     $nodeInfo.append(html);
+
+    $deleteNodeButton.bind('click', function () {
+        $(this).trigger(deleteNodeEvent, { nodeId: nodeId });
+    });
+}
+
+export function setNodeDeleteEventProcessor(callback) {
+    $nodeInfo.on(deleteNodeEvent, function(e, data) {
+        callback(data.nodeId);
+        $nodeInfo.empty();
+
+    });
+
 }
 
 export function makeSlider(sliderParams, layoutControl) {

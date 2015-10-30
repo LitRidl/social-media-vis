@@ -1,14 +1,9 @@
-//import fetch from "whatwg-fetch";
-
-
 import {VivaGraph, sliders} from "./graph/graph";
 import $ from "jquery";
 import "./graph/graph.css!"
 import {GraphControl} from "./graph_control"
-import {makeSlider, initGraphControlButtons} from "./sandbox"
+import {makeSlider, initGraphControlButtons, deleteNodeEvent, setNodeDeleteEventProcessor} from "./sandbox"
 import {UserWrapperNode} from "./model/UserWrapperNode";
-
-
 
 //const GET_DATA_URL = "http://localhost:5000/api/messages/all";
 const GET_DATA_URL = "http://localhost:5000/api/users/all";
@@ -22,7 +17,7 @@ if (sliders != null) {
 
 initGraphControlButtons(graphControl);
 
-
+setNodeDeleteEventProcessor(graphControl.nodeDelete);
 
 init();
 

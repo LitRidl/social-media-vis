@@ -124,7 +124,7 @@ export class VivaGraph {
 
         $(svgGroupElem).hover(function () { // mouse over
             highlightRelatedNodes(node.id, true);
-            sandbox.showNodeInfo(node.data.getInfo()); //todo to sandbox
+            sandbox.showNodeInfo(node.data.getInfo(), node.id);
         }, function () { // mouse out
             highlightRelatedNodes(node.id, false);
         });
@@ -311,7 +311,12 @@ export class VivaGraph {
 
     };
 
-    deleteNode = (node) => {  //todo fixme low-level removeNode already exists
+    deleteNode = (nodeId) => {  //todo fixme low-level removeNode already exists
+        console.log(`deleting node ${nodeId}`);
+        this.graph.removeNode(nodeId);
+
+        this.nodes.delete(nodeId);
+
 
     };
 

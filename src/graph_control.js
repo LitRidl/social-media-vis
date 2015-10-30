@@ -37,4 +37,12 @@ export class GraphControl {
     update() {
 
     }
+
+    nodeDelete = (nodeId) => {
+        this.graph.deleteNode(nodeId);
+    };
+
+    nodeUpdate() {
+
+    }
 }
