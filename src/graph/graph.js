@@ -135,7 +135,7 @@ export class VivaGraph {
         let expand = this.expandNode;
         let collapse = this.collapseNode;
         svgGroupElem.addEventListener('dblclick', function () {
-            alert(`node pinned: ${layout.isNodePinned(node.id)}`);
+            //alert(`node pinned: ${layout.isNodePinned(node.id)}`);
 
             if (node.expanded) {
                 node.expanded = false;
@@ -200,7 +200,7 @@ export class VivaGraph {
     }
 
     addNode(nodeId, node) {
-        node.isPinned = true;
+        //node.isPinned = true;
         var nodeUI = this.graph.addNode(nodeId, node);
         //nodeUI.pinned = false;
         return nodeUI;
@@ -221,6 +221,7 @@ export class VivaGraph {
             //node.pinned = false;
             this.nodes.set(node.getId(), node);
 
+            node.isPinned = true; //TODO fixme pin nodes only for layout
             this.addNode(node.getId(), node);
 
         }
