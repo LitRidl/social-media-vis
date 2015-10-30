@@ -10,7 +10,10 @@ const $sliders = $('#sliders');
 const $nodeInfo = $('#node_info');
 
 export function showNodeInfo(html) {
-    $nodeInfo.html(html);
+    let $nodeButtons = $nodeInfo.html('<div class="btn-toolbar" role="group"></div>');
+    $nodeButtons.append('<button id="btn_node_update" type="button" class="btn btn-small disabled">Обновить</button>');
+    $nodeButtons.append('<button id="btn_node_delete" type="button" class="btn btn-small">Удалить</button>');
+    $nodeInfo.append(html);
 }
 
 export function makeSlider(sliderParams, layoutControl) {

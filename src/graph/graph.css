@@ -68,3 +68,21 @@ img.centered {
     margin-left: auto;
     margin-right: auto
 }
+
+/*#node_info .btn-toolbar {*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    /*width: 6em*/
+/*}*/
+
+/*.btn-toolbar{*/
+    /*text-align: center;*/
+/*}​*/
+
+
+.center {
+    margin: auto;
+    width: 60%;
+    /*border:3px solid #8AC007;*/
+    padding: 10px;
+}
