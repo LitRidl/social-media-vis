@@ -236,7 +236,7 @@ export class VivaGraph {
         this.layout.updateNodesPostitions();
         let center = graphRect.calculateCenter();
         this.renderer.moveTo(center.x, center.y);
-        let zoomOutCount = newNodes.length / 16;
+        let zoomOutCount = this.graph.getNodesCount() / 16;
         for(let i=0; i< zoomOutCount; ++i) {
             this.zoomOut();
         }
