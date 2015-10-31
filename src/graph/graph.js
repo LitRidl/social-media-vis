@@ -234,12 +234,7 @@ export class VivaGraph {
             //console.log(`${this.layout.getLayout().getNodePosition(nodeUI.id)}`);
         }
         this.layout.updateNodesPostitions();
-        let center = graphRect.calculateCenter();
-        this.renderer.moveTo(center.x, center.y);
-        let zoomOutCount = this.graph.getNodesCount() / 16;
-        for(let i=0; i< zoomOutCount; ++i) {
-            this.zoomOut();
-        }
+        this.fitToScreen(graphRect);
 
         for (let [nodeId, node] of this.nodes) {
             let links = node.getLinks();
@@ -251,6 +246,15 @@ export class VivaGraph {
         }
 
         this.graph.endUpdate();
+    }
+
+    fitToScreen(graphRect) {
+        let center = graphRect.calculateCenter();
+        this.renderer.moveTo(center.x, center.y);
+        let zoomOutCount = this.graph.getNodesCount() / 16;
+        for (let i = 0; i < zoomOutCount; ++i) {
+            this.zoomOut();
+        }
     }
 
     expandNode = (node) => {
