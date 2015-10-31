@@ -7,6 +7,9 @@ import {UserWrapperNode} from "../model/UserWrapperNode";
 import {ForceLayout} from "./layouts/ForceLayout";
 import {ConstantLayout} from "./layouts/ConstantLayout";
 
+import {NotFixedLayout} from "./layouts/NotFixedLayout";
+import {CircularFixedLayout} from "./layouts/CircularFixedLayout";
+
 import {Rect} from "../utils/Rect";
 
 import * as sandbox from "../sandbox"
@@ -58,6 +61,8 @@ export class VivaGraph {
 
         this.layout = new ForceLayout(this.graph);
         //this.layout = new ConstantLayout(this.graph);
+        this.fixedLayout = new NotFixedLayout(this.graph, this.layout.getLayout());
+        //this.fixedLayout = new CircularFixedLayout(this.graph, this.layout.getLayout());
 
 
         this.createArrowHead();
@@ -233,7 +238,7 @@ export class VivaGraph {
             graphRect.update(this.layout.getLayout().getNodePosition(nodeUI.id));
             //console.log(`${this.layout.getLayout().getNodePosition(nodeUI.id)}`);
         }
-        this.layout.updateNodesPostitions();
+        this.fixedLayout.updateNodesPostitions();
         this.fitToScreen(graphRect);
 
         for (let [nodeId, node] of this.nodes) {
@@ -382,7 +387,16 @@ export class VivaGraph {
         }
     }
 
-    changeLayout() {
+    changeLayout = (layout) => {
+        if (layout == 'None') {
+            this.fixedLayout = new NotFixedLayout(this.graph, this.layout.getLayout());
+        }
+
+        if (layout == 'Circular') {
+            this.fixedLayout = new CircularFixedLayout(this.graph, this.layout.getLayout());
+        }
+
+        this.fixedLayout.updateNodesPostitions();
 
     }
 

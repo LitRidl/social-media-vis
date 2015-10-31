@@ -5,11 +5,17 @@ import "bootstrap-slider/dist/css/bootstrap-slider.css!";
 import slider from "bootstrap-slider";
 import _ from "underscore";
 
+const $graphControl = $('#graph_control');
+
 const $sliders = $('#sliders');
+
+const $dynamicLayoutButton = $('#btn_layout_dynamic');
+const $circularLayoutButton = $('#btn_layout_circle');
 
 const $nodeInfo = $('#node_info');
 
 export const deleteNodeEvent = 'deleteNode';
+export const changeLayoutEvent = 'changeLayout';
 
 
 export function showNodeInfo(html, nodeId) {
@@ -30,6 +36,22 @@ export function setNodeDeleteEventProcessor(callback) {
         callback(data.nodeId);
         $nodeInfo.empty();
 
+    });
+
+}
+
+export function activateLayoutButtons() {
+    $dynamicLayoutButton.bind('click', function () {
+        $(this).trigger(changeLayoutEvent, { layout: "None" });
+    });
+    $circularLayoutButton.bind('click', function () {
+        $(this).trigger(changeLayoutEvent, { layout: "Circular" });
+    });
+}
+
+export function setChangeLayoutEventProcessor(callback) {
+    $graphControl.on(changeLayoutEvent, function(e, data) {
+        callback(data.layout);
     });
 
 }
