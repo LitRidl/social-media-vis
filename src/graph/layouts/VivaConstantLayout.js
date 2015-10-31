@@ -1,4 +1,4 @@
-
+'use strict';
 
 class Rect {
     constructor ({x1=Number.MAX_VALUE, y1=Number.MAX_VALUE, x2=Number.MIN_VALUE, y2=Number.MIN_VALUE}) {
@@ -59,7 +59,7 @@ export class VivaConstantLayout {
         this.userSettings = userSettings;
 
         // This class simply follows API, it does not use some of the arguments:
-        this.graphRect = new Rect();
+        this.graphRect = new Rect({});
         this.layoutLinks = {};
 
         this.layoutNodes = typeof Object.create === 'function' ? Object.create(null) : {};
@@ -83,7 +83,7 @@ export class VivaConstantLayout {
 
 
 
-    ensureNodeInitialized(node) {
+    ensureNodeInitialized = (node) => {
         this.layoutNodes[node.id] = this.placeNodeCallback(node);
         this.updateGraphRect(this.layoutNodes[node.id], this.graphRect);
     }
@@ -91,16 +91,16 @@ export class VivaConstantLayout {
     updateNodePositions() {
         if (this.graph.getNodesCount() === 0) { return; }
 
-        this.graphRect = new Rect();
+        this.graphRect = new Rect({});
 
         this.graph.forEachNode(this.ensureNodeInitialized);
     }
 
-    ensureLinkInitialized(link) {
+    ensureLinkInitialized = (link) => {
         this.layoutLinks[link.id] = link;
     }
 
-    onGraphChanged(changes) {
+    onGraphChanged = (changes) => {
         for (let i = 0; i < changes.length; ++i) {
             let change = changes[i];
             if (change.node) {

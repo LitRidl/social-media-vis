@@ -1,3 +1,5 @@
+'use strict';
+
 const DEFAULT_POSITION = {x:0, y: 0};
 
 export class GraphLayout {

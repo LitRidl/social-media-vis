@@ -1,13 +1,9 @@
-//import fetch from "github/fetch";
-//import fetch from "whatwg-fetch";
 import {VivaGraph, sliders} from "./graph/graph";
 import $ from "jquery";
 import "./graph/graph.css!"
 import {GraphControl} from "./graph_control"
-import {makeSlider, initGraphControlButtons} from "./sandbox"
+import * as sandbox from "./sandbox"
 import {UserWrapperNode} from "./model/UserWrapperNode";
-
-
 
 //const GET_DATA_URL = "http://localhost:5000/api/messages/all";
 const GET_DATA_URL = "http://localhost:5000/api/users/all";
@@ -16,11 +12,16 @@ let graph = new VivaGraph(document.getElementById("graph"));
 let graphControl = new GraphControl(graph);
 
 if (sliders != null) {
-    sliders.forEach((slider) => makeSlider(slider, graphControl));
+    sliders.forEach((slider) => sandbox.makeSlider(slider, graphControl));
 }
 
-initGraphControlButtons(graphControl);
+sandbox.initGraphControlButtons(graphControl);
 
+sandbox.setNodeDeleteEventProcessor(graphControl.nodeDelete);
+
+sandbox.activateLayoutButtons();
+
+sandbox.setChangeLayoutEventProcessor(graph.changeLayout);
 
 
 init();

@@ -1,3 +1,5 @@
+'use strict';
+
 export class GraphControl {
     constructor(graph) {
         this.graph = graph;
@@ -33,6 +35,14 @@ export class GraphControl {
     };
 
     update() {
+
+    }
+
+    nodeDelete = (nodeId) => {
+        this.graph.deleteNode(nodeId);
+    };
+
+    nodeUpdate() {
 
     }
 }

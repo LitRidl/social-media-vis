@@ -28,10 +28,10 @@ svg {
 }
 
 #graph_control {
-    position: absolute;
+    position: relative;
     float:right;
     width: 20em;
-    height: 100%;
+    height: 95%;
     right: 0;
     top: 0.5em;
     margin: 0.5em;
@@ -46,12 +46,12 @@ svg {
 
 #node_info {
     font-size: 18px;
-    position: relative;
+    position: absolute;
     left: 10px;
-    right: 17px;
-    top: 80px;
-    bottom: 50px;
-    width: 15em;
+    top: 350px;
+    bottom: 10px;
+    width: 14em;
+    height: auto;
     padding: 10px;
     border-radius: 5px;
     -moz-border-radius: 5px;
@@ -61,4 +61,28 @@ svg {
     background: #fff;
     opacity: 0.9;
     overflow: auto;
+}
+
+img.centered {
+    display: block;
+    margin-left: auto;
+    margin-right: auto
+}
+
+/*#node_info .btn-toolbar {*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    /*width: 6em*/
+/*}*/
+
+/*.btn-toolbar{*/
+    /*text-align: center;*/
+/*}​*/
+
+
+.center {
+    margin: auto;
+    width: 60%;
+    /*border:3px solid #8AC007;*/
+    padding: 10px;
 }

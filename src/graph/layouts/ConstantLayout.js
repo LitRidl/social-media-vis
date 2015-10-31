@@ -1,4 +1,7 @@
+'use strict';
+
 import Viva from "vivagraphjs";
+import {VivaConstantLayout} from "./VivaConstantLayout";
 
 const DEFAULT_SETTINGS = {
     radius: 1000,
@@ -11,11 +14,10 @@ const MIN_NODE_SIZE = 24;
 const MAX_NODE_SIZE = 48;
 
 
-export class ConstantLayout {
+export class ConstantLayout extends VivaConstantLayout {
     constructor(graph, layoutSettings=DEFAULT_SETTINGS) {
+        super(graph);
         this.settings = layoutSettings;
-        this.layout = Viva.Graph.Layout.constant(graph);
-        this.layout.placeNode(this.getConstantNodePosition);
     }
 
     _calculateNodePosition(index, anglePerNode) {
@@ -39,20 +41,24 @@ export class ConstantLayout {
         return this.settings.radius;
     }
 
-    getConstantNodePosition = (node) => {
+    _setRadius(radius) {
+        return this.settings.radius = radius;
+    }
+
+    placeNodeCallback(node) {
         let newX = node.data.pos.x - this.getNodeSize(node.data) / 2;
         let newY = node.data.pos.y - this.getNodeSize(node.data) / 2;
         return {x: newX, y: newY};
     };
 
-    getNodePosition = (nodeUI, pos) => { //UINode
-        let newX = nodeUI.node.data.pos.x - this.getNodeSize(nodeUI.node.data) / 2;
-        let newY = nodeUI.node.data.pos.y - this.getNodeSize(nodeUI.node.data) / 2;
-        nodeUI.position = {x: newX, y: newY};
-        nodeUI.attr('transform',
-            `translate( ${newX}, ${newY})`);
-        //return newPos;
-    };
+    //getNodePosition = (nodeUI, pos) => { //UINode
+    //    let newX = nodeUI.node.data.pos.x - this.getNodeSize(nodeUI.node.data) / 2;
+    //    let newY = nodeUI.node.data.pos.y - this.getNodeSize(nodeUI.node.data) / 2;
+    //    nodeUI.position = {x: newX, y: newY};
+    //    nodeUI.attr('transform',
+    //        `translate( ${newX}, ${newY})`);
+    //    //return newPos;
+    //};
 
     getNodeSize = (objetWrapper) => {
         //let linksSize = objetWrapper.getLinks().length;
@@ -66,20 +72,41 @@ export class ConstantLayout {
 
     };
 
-    updateNodesPostitions(nodes) { // just Node
-        const anglePerNode = 2 * Math.PI / nodes.length;
-        for(let [index, node] of nodes.entries()) {
-            node.pos = this._calculateNodePosition(index, anglePerNode);
+    updateNodesPostitions() { // just Node
+        let size = this.layoutNodes.length;
+
+        let newRadius = size * 20 / Math.PI;
+        this._setRadius(newRadius);
+
+        const anglePerNode = 2 * Math.PI / size;
+        for(let [index, node] of this.layoutNodes.entries()) {
+            let newPos = this._calculateNodePosition(index, anglePerNode);
+            this.setNodePosition(node.id, newPos.x, newPos.y);
         }
 
-        return nodes;
     }
 
     getLayout() {
-        return this.layout;
+        return this;
     }
 
     getSettings() {
         return this.settings;
+    }
+
+    /*
+     * Checks whether given node is pinned; all nodes in this layout are pinned.
+     */
+    isNodePinned(node) {
+        return node.pinned;
+    }
+
+    /*
+     * Requests layout algorithm to pin/unpin node to its current position
+     * Pinned nodes should not be affected by layout algorithm and always
+     * remain at their position
+     */
+    pinNode(node, isPinned) {
+        node.pinned = isPinned;
     }
 }

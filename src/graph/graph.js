@@ -1,9 +1,18 @@
+'use strict';
+
 import Viva from "vivagraphjs";
 import $ from "jquery";
 
 import {UserWrapperNode} from "../model/UserWrapperNode";
 import {ForceLayout} from "./layouts/ForceLayout";
 import {ConstantLayout} from "./layouts/ConstantLayout";
+
+import {NotFixedLayout} from "./layouts/NotFixedLayout";
+import {CircularFixedLayout} from "./layouts/CircularFixedLayout";
+
+import {Rect} from "../utils/Rect";
+
+import * as sandbox from "../sandbox"
 
 const MAX_LINKS_SIZE = 10000;
 const DEFAULT_NODE_SIZE = 24;
@@ -12,7 +21,6 @@ const MAX_NODE_SIZE = 48;
 const DEFAULT_LINK_COLOR = 'gray';
 const HIGHLIGHT_LINK_COLOR = 'blue';
 
-const $nodeInfo = $('#node_info');
 
 export const sliders = [
     {
@@ -49,11 +57,12 @@ export class VivaGraph {
 
         this.graph = Viva.Graph.graph();
 
-        //this.graphics = Viva.Graph.View.svgGraphics();
         this.graphics = Viva.Graph.View.svgGraphics();
 
-        //this.layout = new ForceLayout(this.graph);
-        this.layout = new ConstantLayout(this.graph);
+        this.layout = new ForceLayout(this.graph);
+        //this.layout = new ConstantLayout(this.graph);
+        this.fixedLayout = new NotFixedLayout(this.graph, this.layout.getLayout());
+        //this.fixedLayout = new CircularFixedLayout(this.graph, this.layout.getLayout());
 
 
         this.createArrowHead();
@@ -120,7 +129,7 @@ export class VivaGraph {
 
         $(svgGroupElem).hover(function () { // mouse over
             highlightRelatedNodes(node.id, true);
-            $nodeInfo.html(node.data.getInfo()); //todo to sandbox
+            sandbox.showNodeInfo(node.data.getInfo(), node.id);
         }, function () { // mouse out
             highlightRelatedNodes(node.id, false);
         });
@@ -134,7 +143,7 @@ export class VivaGraph {
         let expand = this.expandNode;
         let collapse = this.collapseNode;
         svgGroupElem.addEventListener('dblclick', function () {
-            alert(`node pinned: ${layout.isNodePinned(node.id)}`);
+            //alert(`node pinned: ${layout.isNodePinned(node.id)}`);
 
             if (node.expanded) {
                 node.expanded = false;
@@ -199,8 +208,10 @@ export class VivaGraph {
     }
 
     addNode(nodeId, node) {
-        //node.isPinned = false;
-        this.graph.addNode(nodeId, node);
+        //node.isPinned = true;
+        var nodeUI = this.graph.addNode(nodeId, node);
+        //nodeUI.pinned = false;
+        return nodeUI;
     }
 
     removeNode(nodeId) {
@@ -211,16 +222,24 @@ export class VivaGraph {
         this.graph.addLink(nodeId1, nodeId2);
     }
 
+
     addNodes(newNodes) {
         this.graph.beginUpdate();
 
-        this.layout.updateNodesPostitions(newNodes);
+
+        let graphRect = new Rect({});
         for (let node of newNodes) {
+            //node.pinned = false;
             this.nodes.set(node.getId(), node);
 
-            this.addNode(node.getId(), node);
+            node.isPinned = true; //TODO fixme pin nodes only for layout
+            let nodeUI = this.addNode(node.getId(), node);
 
+            graphRect.update(this.layout.getLayout().getNodePosition(nodeUI.id));
+            //console.log(`${this.layout.getLayout().getNodePosition(nodeUI.id)}`);
         }
+        this.fixedLayout.updateNodesPostitions();
+        this.fitToScreen(graphRect);
 
         for (let [nodeId, node] of this.nodes) {
             let links = node.getLinks();
@@ -232,6 +251,15 @@ export class VivaGraph {
         }
 
         this.graph.endUpdate();
+    }
+
+    fitToScreen(graphRect) {
+        let center = graphRect.calculateCenter();
+        this.renderer.moveTo(center.x, center.y);
+        let zoomOutCount = this.graph.getNodesCount() / 16;
+        for (let i = 0; i < zoomOutCount; ++i) {
+            this.zoomOut();
+        }
     }
 
     expandNode = (node) => {
@@ -292,7 +320,12 @@ export class VivaGraph {
 
     };
 
-    deleteNode = (node) => {  //todo fixme low-level removeNode already exists
+    deleteNode = (nodeId) => {  //todo fixme low-level removeNode already exists
+        console.log(`deleting node ${nodeId}`);
+        this.graph.removeNode(nodeId);
+
+        this.nodes.delete(nodeId);
+
 
     };
 
@@ -354,7 +387,16 @@ export class VivaGraph {
         }
     }
 
-    changeLayout() {
+    changeLayout = (layout) => {
+        if (layout == 'None') {
+            this.fixedLayout = new NotFixedLayout(this.graph, this.layout.getLayout());
+        }
+
+        if (layout == 'Circular') {
+            this.fixedLayout = new CircularFixedLayout(this.graph, this.layout.getLayout());
+        }
+
+        this.fixedLayout.updateNodesPostitions();
 
     }
 
