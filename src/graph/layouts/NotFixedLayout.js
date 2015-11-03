@@ -4,7 +4,7 @@ export class NotFixedLayout {
         this.layout = layout;
     }
 
-    updateNodesPostitions = () => {
+    updateNodesPositions = () => {
         let graph = this.graph;
         let layout = this.layout;
         graph.forEachNode((node) => {

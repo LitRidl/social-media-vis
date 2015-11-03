@@ -238,7 +238,7 @@ export class VivaGraph {
             graphRect.update(this.layout.getLayout().getNodePosition(nodeUI.id));
             //console.log(`${this.layout.getLayout().getNodePosition(nodeUI.id)}`);
         }
-        this.fixedLayout.updateNodesPostitions();
+        this.fixedLayout.updateNodesPositions();
         this.fitToScreen(graphRect);
 
         for (let [nodeId, node] of this.nodes) {
@@ -396,7 +396,7 @@ export class VivaGraph {
             this.fixedLayout = new CircularFixedLayout(this.graph, this.layout.getLayout());
         }
 
-        this.fixedLayout.updateNodesPostitions();
+        this.fixedLayout.updateNodesPositions();
 
     }
 

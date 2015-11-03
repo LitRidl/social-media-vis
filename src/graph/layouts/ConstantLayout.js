@@ -72,7 +72,7 @@ export class ConstantLayout extends VivaConstantLayout {
 
     };
 
-    updateNodesPostitions() { // just Node
+    updateNodesPositions() { // just Node
         let size = this.layoutNodes.length;
 
         let newRadius = size * 20 / Math.PI;

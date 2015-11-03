@@ -51,7 +51,7 @@ export class ForceLayout {
         //this.layout.placeNode(this.getNodePosition);
     }
 
-    //updateNodesPostitions() {
+    //updateNodesPositions() {
     //    let size = this.graph.getNodesCount();
     //    console.log(`size: ${size}`);
     //

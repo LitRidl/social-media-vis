@@ -7,7 +7,7 @@ export class GraphLayout {
         this.settings = layoutSettings;
     }
 
-    updateNodesPostitions(nodes) {
+    updateNodesPositions(nodes) {
         return nodes;
     }
 

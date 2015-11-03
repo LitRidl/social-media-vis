@@ -14,7 +14,7 @@ export class CircularFixedLayout {
     }
 
 
-    updateNodesPostitions = () => {
+    updateNodesPositions = () => {
         let graph = this.graph;
         let layout = this.layout;
 
