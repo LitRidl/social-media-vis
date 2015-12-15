@@ -1,0 +1,34 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+html, body, #map {
+    height: 100%;
+    width: 100%;
+}
+
+.help-icon {
+    margin-right: 20px;
+    margin-top: 10px;
+    color: #444;
+}
+
+
+.help-icon:hover {
+    color: #888;
+}
+
+@media print {
+    .help-icon {
+        display: none !important;
+    }
+
+    a:link, a:visited {
+        color: #0078A8 !important;
+    }
+
+    a[href]:after {
+        content: none;
+    }
+}

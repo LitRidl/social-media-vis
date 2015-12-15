@@ -4,31 +4,56 @@ import $ from "jquery";
 import "bootstrap-slider/dist/css/bootstrap-slider.css!";
 import slider from "bootstrap-slider";
 import _ from "underscore";
+import moment from "moment";
+import d3 from "d3";
 
-const $graphControl = $('#graph_control');
+const ru_RU = {
+    "decimal": ",",
+    "thousands": "\xa0",
+    "grouping": [3],
+    "currency": ["", " руб."],
+    "dateTime": "%A, %e %B %Y г. %X",
+    "date": "%d.%m.%Y",
+    "time": "%H:%M:%S",
+    "periods": ["AM", "PM"],
+    "days": ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"],
+    "shortDays": ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+    "months": ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+    "shortMonths": ["Янв.", "Фев.", "Март", "Апр.", "Май", "Июнь", "Июль", "Авг.", "Сент.", "Окт.", "Ноя.", "Дек."]
+};
+const RU = d3.locale(ru_RU);
+
+const ruDateFormat = RU.timeFormat("%B %Y");
+const ruDateTimeFormat = RU.timeFormat("%H:%M %d.%m.%Y");
 
 const $sliders = $('#sliders');
 
-const $dynamicLayoutButton = $('#btn_layout_dynamic');
-const $circularLayoutButton = $('#btn_layout_circle');
 
 const $nodeInfo = $('#node_info');
 
 export const deleteNodeEvent = 'deleteNode';
-export const changeLayoutEvent = 'changeLayout';
 
 
-export function showNodeInfo(html, nodeId) {
+
+export function showNodeInfo(html, nodeId) { //todo to html template
     let $nodeButtons = $nodeInfo.html('<div class="btn-toolbar" role="group"></div>');
     let $updateNodeButton = $nodeButtons
-        .append('<button id="btn_node_update" type="button" class="btn btn-small disabled">Обновить</button>');
+        .append(createButton("btn_node_update", "Обновить", false));
     let $deleteNodeButton = $nodeButtons
-        .append('<button id="btn_node_delete" type="button" class="btn btn-small">Удалить</button>');
+        .append(createButton("btn_node_delete", "Удалить"));
     $nodeInfo.append(html);
 
     $deleteNodeButton.bind('click', function () {
         $(this).trigger(deleteNodeEvent, { nodeId: nodeId });
     });
+}
+
+function createButton(id, name, enabled=true) {
+    return `<button id="${id}" type="button" class="btn btn-small ${enabled?'':'disabled'}">${name}</button>`;
+}
+
+function appendButton(target, button) {
+    target.append(button);
 }
 
 export function setNodeDeleteEventProcessor(callback) {
@@ -40,20 +65,8 @@ export function setNodeDeleteEventProcessor(callback) {
 
 }
 
-export function activateLayoutButtons() {
-    $dynamicLayoutButton.bind('click', function () {
-        $(this).trigger(changeLayoutEvent, { layout: "None" });
-    });
-    $circularLayoutButton.bind('click', function () {
-        $(this).trigger(changeLayoutEvent, { layout: "Circular" });
-    });
-}
-
-export function setChangeLayoutEventProcessor(callback) {
-    $graphControl.on(changeLayoutEvent, function(e, data) {
-        callback(data.layout);
-    });
-
+export function clearNodeInfo() {
+    $nodeInfo.empty();
 }
 
 export function makeSlider(sliderParams, layoutControl) {
@@ -79,20 +92,45 @@ export function makeSlider(sliderParams, layoutControl) {
     }, 50)).data('slider');
 }
 
-export function removeSliders() {
-    $(".param").remove();
+export function removeElement(elementId) {
+    $(elementId).remove();
 }
 
-export function initGraphControlButtons(graphControl) {
-    const $zoomInBtn = $("#btn_graph_zoom_in");
-    $zoomInBtn.on("click", graphControl.zoomIn);
+export function addOnClick(elementId, fn) {
+    const $element = $(elementId);
+    $element.on("click", fn);
 
-    const $zoomOutBtn = $("#btn_graph_zoom_out");
-    $zoomOutBtn.on("click", graphControl.zoomOut);
+}
 
-    const $centerBtn = $("#btn_graph_center");
-    $centerBtn.on("click", graphControl.reset);
+function getDayHour(obj) { //todo fixme
+    //let date = strToDate(obj.date);
+    let date = obj.date;
+    date.set("millisecond", 0);
+    date.set("second",0);
+    date.set("minute", 0);
+    date.set("hour", 0);
+    obj.date_key = date; //todo?
+    return date.format("YYYY-MM-DD HH:mm");
+}
 
-    const $pauseBtn = $("#btn_graph_pause");
-    $pauseBtn.on("click", graphControl.pause);
+
+export function strToDate(str) {
+    return  moment(str);
+}
+
+export function getHistogrammBy(data, keyFn) {
+    let splittedData = d3.nest()
+    .key(keyFn)
+    .sortKeys(d3.ascending)
+    .entries(data);
+
+    return splittedData;
+}
+
+export function getHistogrammByDateHour(data) {
+    return getHistogrammBy(data, getDayHour);
+}
+
+export function formatDate(date) {
+    return ruDateTimeFormat(date);
 }

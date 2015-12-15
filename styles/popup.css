@@ -1,0 +1,65 @@
+/* Containers */
+.leaflet-popup-content-wrapper {
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.leaflet-popup-tip {
+    opacity: 0.95;
+}
+
+.leaflet-popup {
+    z-index: 10000;
+    margin-left: -9px;
+}
+
+.leaflet-popup-content {
+    font-family: 'MyriadPro-Regular, Arial';
+    font-size: 12px;
+    /*margin: 20px 8px 12px 8px;*/
+    line-height: 1.2;
+    padding: 0;
+}
+
+
+/* Card fields */
+.data-table {
+    min-width: 224px;
+}
+
+.data-table td {
+    padding: 2px 8px 2px 0;
+    border-bottom: 1px dotted #CCC;
+    font-family: 'myriad-pro';
+    font-weight: 400;
+    font-size: 12px;
+    vertical-align: top;
+}
+
+td.title {
+    color: #666;
+    width: 96px;
+    padding-left: 8px !important;
+}
+
+td.value-holder {
+    min-width: 120px;
+}
+
+.data-table tr:first-child td {
+    border-top: 0px dotted #CCC;
+}
+
+.data-table tr:last-child td {
+    border-width: 0px;
+}
+
+@media print {
+    .leaflet-control-zoom {
+        display: none;
+    }
+
+    .leaflet-popup {
+        -webkit-print-color-adjust: exact;
+    }
+}

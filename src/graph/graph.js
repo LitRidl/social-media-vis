@@ -3,12 +3,16 @@
 import Viva from "vivagraphjs";
 import $ from "jquery";
 
-import {UserWrapperNode} from "../model/UserWrapperNode";
+import {instance as eventsBus} from "../events/EventAggregator";
+import * as EventsConst from "../events/EventsConst";
+import {Event} from "../events/Event";
+
 import {ForceLayout} from "./layouts/ForceLayout";
 import {ConstantLayout} from "./layouts/ConstantLayout";
 
 import {NotFixedLayout} from "./layouts/NotFixedLayout";
 import {CircularFixedLayout} from "./layouts/CircularFixedLayout";
+import {TimeFixedLayout} from "./layouts/TimeFixedLayout";
 
 import {Rect} from "../utils/Rect";
 
@@ -52,6 +56,8 @@ export const sliders = [
 export class VivaGraph {
 
     constructor(element) {
+        this.eventsBus = eventsBus;
+
         this.paused = false;
         this.nodes = new Map();
 
@@ -68,7 +74,7 @@ export class VivaGraph {
         this.createArrowHead();
 
 
-        this.graphics.node(this.renderNode.bind(this, this.graph, this.graphics, this.layout.getLayout()));
+        this.graphics.node(this.renderNode.bind(this, this.graph, this.graphics, this.layout.getLayout(), this.eventsBus));
         this.graphics.placeNode(this.positionNode);
 
         this.graphics.link(this.renderLink);
@@ -81,13 +87,109 @@ export class VivaGraph {
             layout: this.layout.getLayout(),
         });
 
+        this.eventsBus = eventsBus;
+
+        this.initControls();
+
+        this.initEvents();
+
         this.renderer.run(50); //todo fixme?
+
 
     }
 
+    initControls() {
+        sandbox.addOnClick("#btn_graph_zoom_in",
+            () => this.eventsBus.publish(EventsConst.TOPIC_CONTROLS_GRAPH,
+                new Event(EventsConst.ZOOM_IN, {})));
+
+        sandbox.addOnClick("#btn_graph_zoom_out",
+            () => this.eventsBus.publish(EventsConst.TOPIC_CONTROLS_GRAPH,
+                new Event(EventsConst.ZOOM_OUT, {})));
+
+        sandbox.addOnClick("#btn_graph_center",
+            () => this.eventsBus.publish(EventsConst.TOPIC_CONTROLS_GRAPH,
+                new Event(EventsConst.CENTER, {})));
+
+        sandbox.addOnClick("#btn_graph_pause",
+            () => this.eventsBus.publish(EventsConst.TOPIC_CONTROLS_GRAPH,
+                new Event(EventsConst.PAUSE, {})));
+
+        sandbox.addOnClick('#btn_layout_dynamic',
+            () => this.eventsBus.publish(EventsConst.TOPIC_CONTROLS_GRAPH,
+                new Event(EventsConst.CHANGE_LAYOUT, { layout: "None" })));
+
+        sandbox.addOnClick('#btn_layout_circle',
+            () => this.eventsBus.publish(EventsConst.TOPIC_CONTROLS_GRAPH,
+                new Event(EventsConst.CHANGE_LAYOUT,  { layout: "Circular" })));
+
+        sandbox.addOnClick('#btn_layout_time',
+            () => this.eventsBus.publish(EventsConst.TOPIC_CONTROLS_GRAPH,
+                new Event(EventsConst.CHANGE_LAYOUT, { layout: "Time" })));
+
+        //sandbox.addOnClick(graphControl.nodeDelete); //todo after load node info?
+    }
+
+    initEvents() {
+
+        this.eventsBus.subscribe(EventsConst.TOPIC_CONTROLS_GRAPH, (event) => {
+            if (event.type == EventsConst.ZOOM_IN) {
+                this.zoomIn();
+            }
+            if (event.type == EventsConst.ZOOM_OUT) {
+                this.zoomOut();
+            }
+            if (event.type == EventsConst.CENTER) {
+                this.center();
+                //this.graph.reset();
+            }
+            if (event.type == EventsConst.PAUSE) {
+                this.renderPause();
+            }
+            if (event.type == EventsConst.CHANGE_LAYOUT) {
+                this.changeLayout(event.getData().layout)
+            }
+        });
+
+    }
+
+
+    getNodesCount() {
+        let nodes = [];
+        this.graph.forEachNode(node => nodes.push(node));
+
+        return nodes.length;
+    }
+
+    getNodesCount2() {
+        return this.nodes.size;
+    }
+
+    getLinksCount() {
+        let links = [];
+        this.graph.forEachLink(link => links.push(link));
+
+        return links.length;
+
+    }
+
+    getNode = (nodeId) => {
+        return this.graph.getNode(nodeId);
+    }
+
+    pinNode = (nodeId, pin) => {
+        let node = this.getNode(nodeId);
+        this.layout.getLayout().pinNode(node, pin);
+    }
+
+    getSizeMeasure = (node) => {
+        return node.type == 'user' ? node.originalObject.followers_count : 0.0;
+    }
+
+
     getNodeSize = (objetWrapper) => {
         //let linksSize = objetWrapper.getLinks().length;
-        let linksSize = objetWrapper.getSizeMeasure();
+        let linksSize = this.getSizeMeasure(objetWrapper);
         if (linksSize > MAX_LINKS_SIZE) {
             linksSize = MAX_LINKS_SIZE;
         }
@@ -97,18 +199,19 @@ export class VivaGraph {
 
     };
 
-    //highlightRelatedNodes = (nodeId, highlight) => {
-    //    graph.forEachLinkedNode(nodeId, function (node, link) {
-    //        var linkUI = graphics.getLinkUI(link.id);
-    //        if (linkUI) {
-    //            linkUI.attr('stroke', highlight ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR);
-    //        }
-    //    });
-    //};
+    highlightRelatedNodes = (nodeId, highlight) => {
+        let graphics = this.graphics;
+        this.graph.forEachLinkedNode(nodeId, function (node, link) {
+            let linkUI = graphics.getLinkUI(link.id);
+            if (linkUI) {
+                linkUI.attr('stroke', highlight ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR);
+            }
+        });
+    };
 
-    renderNode = (graph, graphics, layout, node) => {
+    renderNode = (graph, graphics, layout, eventsBus, node) => {
         let svgGroupElem = Viva.Graph.svg('g');
-        let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.getName());
+        let svgText = Viva.Graph.svg('text').attr('y', '-4px').text(node.data.getText());
         let svgImgElem = Viva.Graph.svg('image')
             .attr('width', this.getNodeSize(node.data))
             .attr('height', this.getNodeSize(node.data))
@@ -117,41 +220,18 @@ export class VivaGraph {
         svgGroupElem.append(svgText);
         svgGroupElem.append(svgImgElem);
 
-        let highlightRelatedNodes = function (nodeId, highlight) {
-            graph.forEachLinkedNode(nodeId, function (node, link) {
-                var linkUI = graphics.getLinkUI(link.id);
-                if (linkUI) {
-                    linkUI.attr('stroke', highlight ? HIGHLIGHT_LINK_COLOR : DEFAULT_LINK_COLOR);
-                }
-            });
-        };
-
-
         $(svgGroupElem).hover(function () { // mouse over
-            highlightRelatedNodes(node.id, true);
-            sandbox.showNodeInfo(node.data.getInfo(), node.id);
+            eventsBus.publish(EventsConst.TOPIC_CONTROLS, new Event(EventsConst.NODE_HOVER, {hover: true, nodeId: node.id}));
         }, function () { // mouse out
-            highlightRelatedNodes(node.id, false);
+            eventsBus.publish(EventsConst.TOPIC_CONTROLS, new Event(EventsConst.NODE_HOVER, {hover: false, nodeId: node.id}));
         });
 
         svgGroupElem.addEventListener('click', function () {
-            // toggle pinned mode
-            //layout.pinNode(node, !layout.isNodePinned(node));
-            layout.pinNode(node, true);
+            eventsBus.publish(EventsConst.TOPIC_CONTROLS, new Event(EventsConst.NODE_CLICK, {nodeId: node.id}));
         });
 
-        let expand = this.expandNode;
-        let collapse = this.collapseNode;
         svgGroupElem.addEventListener('dblclick', function () {
-            //alert(`node pinned: ${layout.isNodePinned(node.id)}`);
-
-            if (node.expanded) {
-                node.expanded = false;
-                collapse(node);
-            } else {
-                node.expanded = true;
-                expand(node);
-            }
+            eventsBus.publish(EventsConst.TOPIC_CONTROLS, new Event(EventsConst.NODE_DBLCLICK, {nodeId: node.id}));
         });
         return svgGroupElem;
     };
@@ -209,13 +289,15 @@ export class VivaGraph {
 
     addNode(nodeId, node) {
         //node.isPinned = true;
-        var nodeUI = this.graph.addNode(nodeId, node);
+        let nodeUI = this.graph.addNode(nodeId, node);
+        this.nodes.set(nodeId, node);
         //nodeUI.pinned = false;
         return nodeUI;
     }
 
     removeNode(nodeId) {
         this.graph.removeNode(nodeId);
+        this.nodes.delete(nodeId);
     }
 
     addLink(nodeId1, nodeId2) {
@@ -239,7 +321,7 @@ export class VivaGraph {
             //console.log(`${this.layout.getLayout().getNodePosition(nodeUI.id)}`);
         }
         this.fixedLayout.updateNodesPositions();
-        this.fitToScreen(graphRect);
+        //this.fitToScreen(graphRect);
 
         for (let [nodeId, node] of this.nodes) {
             let links = node.getLinks();
@@ -396,6 +478,10 @@ export class VivaGraph {
             this.fixedLayout = new CircularFixedLayout(this.graph, this.layout.getLayout());
         }
 
+        if (layout == 'Time') {
+            this.fixedLayout = new TimeFixedLayout(this.graph, this.layout.getLayout());
+        }
+
         this.fixedLayout.updateNodesPositions();
 
     }
@@ -418,4 +504,13 @@ export class VivaGraph {
         defs.append(marker);
     }
 
+    clear() {
+        //this.graph.clear(); //error
+
+        this.graph.beginUpdate();
+
+        this.graph.forEachNode((node) => this.deleteNode(node.id));
+
+        this.graph.endUpdate();
+    }
 }
